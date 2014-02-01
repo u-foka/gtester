@@ -6,9 +6,13 @@ TARGET = GTester
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += src/main.cpp\
+        src/mainwindow.cpp \
+    src/executethread.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += src/mainwindow.h \
+    src/executethread.h
 
-FORMS    += mainwindow.ui
+FORMS    += ui/mainwindow.ui
+
+RESOURCES += resources/icons.qrc
