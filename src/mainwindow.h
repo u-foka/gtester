@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QSettings>
 
-#include "executethread.h"
+#include "testmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,14 +23,18 @@ private slots:
 
     void on_actionRun_selected_triggered();
 
+    void on_actionAdd_test_executable_triggered();
+
 protected:
     void closeEvent(QCloseEvent *event);
 
 private:
-    Ui::MainWindow *ui;
-    QSettings settings;
+    Ui::MainWindow *_ui;
+    QSettings _settings;
+    TestModel _model;
 
-    ExecuteThread *executeThread;
+    bool _running;
+
 };
 
 #endif // MAINWINDOW_H

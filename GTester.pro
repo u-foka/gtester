@@ -8,10 +8,16 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
-    src/executethread.cpp
+    src/executablebase.cpp \
+    src/executabletester.cpp \
+    src/testmodel.cpp \
+    src/testitem.cpp
 
 HEADERS  += src/mainwindow.h \
-    src/executethread.h
+    src/executablebase.h \
+    src/executabletester.h \
+    src/testmodel.h \
+    src/testitem.h
 
 FORMS    += ui/mainwindow.ui
 
