@@ -6,7 +6,7 @@
 
 class TestModel;
 
-class TestItem
+class TestItemBase
 {
 public:
     enum TestStates {
@@ -16,14 +16,14 @@ public:
         StatePartialPass
     };
 
-    TestItem(QString name, bool enabled, TestItem *parent);
-    TestItem(TestModel *model);
-    ~TestItem();
+    TestItemBase(QString name, bool enabled, TestItemBase *parent);
+    TestItemBase(TestModel *model);
+    ~TestItemBase();
 
-    void appendChild(TestItem *child);
-    void removeChild(TestItem *child);
+    void appendChild(TestItemBase *child);
+    void removeChild(TestItemBase *child);
 
-    TestItem *child(int row);
+    TestItemBase *child(int row);
     int childCount() const;
     int columnCount() const;
     bool isCheckbox(int column) const;
@@ -31,7 +31,7 @@ public:
     QVariant checkState(int column) const;
     QVariant data(int column) const;
     int row() const;
-    TestItem *parent() const;
+    TestItemBase *parent() const;
     TestModel *model() const;
 
     Qt::CheckState enabled() const;
@@ -39,13 +39,13 @@ public:
     TestStates state() const;
 
 private:
-    QList<TestItem*> _childItems;
+    QList<TestItemBase*> _childItems;
 
     QString _name;
     bool _enabled;
     TestStates _state;
 
-    TestItem *_parentItem;
+    TestItemBase *_parentItem;
     TestModel *_model;
 };
 

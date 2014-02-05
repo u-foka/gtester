@@ -11,13 +11,13 @@ SOURCES += src/main.cpp\
     src/executablebase.cpp \
     src/executabletester.cpp \
     src/testmodel.cpp \
-    src/testitem.cpp
+    src/testitembase.cpp
 
 HEADERS  += src/mainwindow.h \
     src/executablebase.h \
     src/executabletester.h \
     src/testmodel.h \
-    src/testitem.h
+    src/testitembase.h
 
 FORMS    += ui/mainwindow.ui
 

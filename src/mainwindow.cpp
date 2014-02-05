@@ -68,7 +68,7 @@ void MainWindow::on_actionAdd_test_executable_triggered()
     QFileInfo fileInfo(fileName);
 
     ExecutableTester *tester = new ExecutableTester(
-                new TestItem(fileInfo.fileName(), true, _model.rootItem()),
+                new TestItemBase(fileInfo.fileName(), true, _model.rootItem()),
                 fileInfo, this);
     tester->execute();
 

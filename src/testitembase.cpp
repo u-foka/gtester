@@ -1,4 +1,4 @@
-#include "testitem.h"
+#include "testitembase.h"
 
 #include <stdexcept>
 #include <QStringList>
@@ -26,7 +26,7 @@ const QList<QVariant> TestStateColors(QList<QVariant>() <<
         QColor(Qt::yellow)
         );
 
-TestItem::TestItem(QString name, bool enabled, TestItem *parent) :
+TestItemBase::TestItemBase(QString name, bool enabled, TestItemBase *parent) :
     _name(name), _enabled(enabled), _state(StateNone), _parentItem(parent), _model(parent->model())
 {
     _parentItem->appendChild(this);
@@ -35,24 +35,24 @@ TestItem::TestItem(QString name, bool enabled, TestItem *parent) :
     _model->endInsertRows();
 }
 
-TestItem::TestItem(TestModel *model) :
+TestItemBase::TestItemBase(TestModel *model) :
     _name(), _enabled(true), _state(StateNone), _parentItem(0), _model(model)
 {
 }
 
-TestItem::~TestItem()
+TestItemBase::~TestItemBase()
 {
     if (_parentItem != 0)
         _parentItem->removeChild(this);
 
     // Need to delete children in reverse order because they will
     // remove themselfs from this list in their destructor
-    QList<TestItem*>::Iterator it = _childItems.end();
+    QList<TestItemBase*>::Iterator it = _childItems.end();
     while (it != _childItems.begin())
         delete *--it;
 }
 
-void TestItem::appendChild(TestItem *item)
+void TestItemBase::appendChild(TestItemBase *item)
 {
     if (_childItems.indexOf(item) >= 0) {
         throw std::runtime_error("Cannot append duplicate child item");
@@ -61,27 +61,27 @@ void TestItem::appendChild(TestItem *item)
     _childItems.append(item);
 }
 
-void TestItem::removeChild(TestItem *child)
+void TestItemBase::removeChild(TestItemBase *child)
 {
     _childItems.removeAll(child);
 }
 
-TestItem *TestItem::child(int row)
+TestItemBase *TestItemBase::child(int row)
 {
     return _childItems.value(row);
 }
 
-int TestItem::childCount() const
+int TestItemBase::childCount() const
 {
     return _childItems.count();
 }
 
-int TestItem::columnCount() const
+int TestItemBase::columnCount() const
 {
     return ColumnLast;
 }
 
-bool TestItem::isCheckbox(int column) const
+bool TestItemBase::isCheckbox(int column) const
 {
     if (_parentItem == 0)
         return false;
@@ -89,7 +89,7 @@ bool TestItem::isCheckbox(int column) const
     return column == ColumnName;
 }
 
-QVariant TestItem::bgColor(int column) const
+QVariant TestItemBase::bgColor(int column) const
 {
     switch (column) {
     case ColumnState:
@@ -99,7 +99,7 @@ QVariant TestItem::bgColor(int column) const
     }
 }
 
-QVariant TestItem::checkState(int column) const
+QVariant TestItemBase::checkState(int column) const
 {
     switch (column) {
     case ColumnName:
@@ -109,7 +109,7 @@ QVariant TestItem::checkState(int column) const
     }
 }
 
-QVariant TestItem::data(int column) const
+QVariant TestItemBase::data(int column) const
 {
     switch (column) {
     case ColumnName:
@@ -123,31 +123,31 @@ QVariant TestItem::data(int column) const
     }
 }
 
-int TestItem::row() const
+int TestItemBase::row() const
 {
     if (_parentItem)
-        return _parentItem->_childItems.indexOf(const_cast<TestItem*>(this));
+        return _parentItem->_childItems.indexOf(const_cast<TestItemBase*>(this));
 
     return 0;
 }
 
-TestItem *TestItem::parent() const
+TestItemBase *TestItemBase::parent() const
 {
     return _parentItem;
 }
 
-TestModel *TestItem::model() const
+TestModel *TestItemBase::model() const
 {
     return _model;
 }
 
-Qt::CheckState TestItem::enabled() const
+Qt::CheckState TestItemBase::enabled() const
 {
     if (_childItems.count() == 0)
         return _enabled ? Qt::Checked : Qt::Unchecked;
 
     Qt::CheckState enabled;
-    for (QList<TestItem*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
         if (it == _childItems.begin()) {
             // Inicialize enabled with the first item
             enabled = (*it)->enabled();
@@ -160,23 +160,23 @@ Qt::CheckState TestItem::enabled() const
     return enabled;
 }
 
-void TestItem::setEnabled(bool enabled)
+void TestItemBase::setEnabled(bool enabled)
 {
     if (_childItems.count() == 0) {
         _enabled = enabled;
     }
 
-    for (QList<TestItem*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++)
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++)
         (*it)->setEnabled(enabled);
 }
 
-TestItem::TestStates TestItem::state() const
+TestItemBase::TestStates TestItemBase::state() const
 {
     if (_childItems.count() == 0)
         return _state;
 
     TestStates state;
-    for (QList<TestItem*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
         if ((*it)->state() == StateFail) {
             return StateFail;
         } else if (it == _childItems.begin()) {

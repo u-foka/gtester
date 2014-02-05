@@ -2,12 +2,12 @@
 
 #include <QtGui>
 
-#include "testitem.h"
+#include "testitembase.h"
 
 TestModel::TestModel(QObject *parent)
     : QAbstractItemModel(parent), _rootItem(0)
 {
-    _rootItem = new TestItem(this);
+    _rootItem = new TestItemBase(this);
 }
 
 TestModel::~TestModel()
@@ -18,7 +18,7 @@ TestModel::~TestModel()
 int TestModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return static_cast<TestItem*>(parent.internalPointer())->columnCount();
+        return static_cast<TestItemBase*>(parent.internalPointer())->columnCount();
     else
         return _rootItem->columnCount();
 }
@@ -28,7 +28,7 @@ QVariant TestModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    TestItem *item = static_cast<TestItem*>(index.internalPointer());
+    TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
 
     if (role == Qt::ForegroundRole)
         return QColor(Qt::black);
@@ -47,7 +47,7 @@ QVariant TestModel::data(const QModelIndex &index, int role) const
 
 bool TestModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    TestItem *item = static_cast<TestItem*>(index.internalPointer());
+    TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
 
     if (role == Qt::CheckStateRole) {
         item->setEnabled(value.toInt() == Qt::Checked ? true : false);
@@ -67,7 +67,7 @@ Qt::ItemFlags TestModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    TestItem *item = static_cast<TestItem*>(index.internalPointer());
+    TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
@@ -92,21 +92,21 @@ const
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    TestItem *parentItem;
+    TestItemBase *parentItem;
 
     if (!parent.isValid())
         parentItem = _rootItem;
     else
-        parentItem = static_cast<TestItem*>(parent.internalPointer());
+        parentItem = static_cast<TestItemBase*>(parent.internalPointer());
 
-    TestItem *childItem = parentItem->child(row);
+    TestItemBase *childItem = parentItem->child(row);
     if (childItem)
         return createIndex(row, column, childItem);
     else
         return QModelIndex();
 }
 
-QModelIndex TestModel::index(TestItem *item) const
+QModelIndex TestModel::index(TestItemBase *item) const
 {
     if (item == _rootItem)
         return QModelIndex();
@@ -119,8 +119,8 @@ QModelIndex TestModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    TestItem *childItem = static_cast<TestItem*>(index.internalPointer());
-    TestItem *parentItem = childItem->parent();
+    TestItemBase *childItem = static_cast<TestItemBase*>(index.internalPointer());
+    TestItemBase *parentItem = childItem->parent();
 
     if (parentItem == _rootItem)
         return QModelIndex();
@@ -130,19 +130,19 @@ QModelIndex TestModel::parent(const QModelIndex &index) const
 
 int TestModel::rowCount(const QModelIndex &parent) const
 {
-    TestItem *parentItem;
+    TestItemBase *parentItem;
     if (parent.column() > 0)
         return 0;
 
     if (!parent.isValid())
         parentItem = _rootItem;
     else
-        parentItem = static_cast<TestItem*>(parent.internalPointer());
+        parentItem = static_cast<TestItemBase*>(parent.internalPointer());
 
     return parentItem->childCount();
 }
 
-TestItem * TestModel::rootItem()
+TestItemBase * TestModel::rootItem()
 {
     return _rootItem;
 }
@@ -155,7 +155,7 @@ void TestModel::updateParents(const QModelIndex &index, QVector<int> roles)
 
 void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
 {
-    TestItem *item = static_cast<TestItem*>(index.internalPointer());
+    TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
 
     for (int i = 0; i < item->childCount(); i++) {
         QModelIndex child = index.child(i, index.column());

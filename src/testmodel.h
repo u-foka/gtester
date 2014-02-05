@@ -5,7 +5,7 @@
 #include <QModelIndex>
 #include <QVariant>
 
-class TestItem;
+class TestItemBase;
 
 class TestModel : public QAbstractItemModel
 {
@@ -22,17 +22,17 @@ public:
                         int role = Qt::DisplayRole) const;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex index(TestItem *item) const;
+    QModelIndex index(TestItemBase *item) const;
     QModelIndex parent(const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-    TestItem * rootItem();
+    TestItemBase * rootItem();
 
 private:
-    TestItem *_rootItem;
+    TestItemBase *_rootItem;
 
-    friend class TestItem;
+    friend class TestItemBase;
 
     void updateParents(const QModelIndex &index, QVector<int> roles = QVector<int>());
     void updateChildren(const QModelIndex &index, QVector<int> roles = QVector<int>());
