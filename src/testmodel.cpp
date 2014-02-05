@@ -51,7 +51,11 @@ bool TestModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
     if (role == Qt::CheckStateRole) {
         item->setEnabled(value.toInt() == Qt::Checked ? true : false);
-        emit dataChanged(index, index, QVector<int>() << role);
+        QVector<int> roles;
+        roles << role;
+        emit dataChanged(index, index, roles);
+        updateParents(index, roles);
+        updateChildren(index, roles);
         return true;
     }
 
@@ -67,7 +71,7 @@ Qt::ItemFlags TestModel::flags(const QModelIndex &index) const
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-    if (index.column() == item->isCheckbox(index.column()))
+    if (item->isCheckbox(index.column()))
         flags |= Qt::ItemIsUserCheckable;
 
     return flags;
@@ -141,4 +145,21 @@ int TestModel::rowCount(const QModelIndex &parent) const
 TestItem * TestModel::rootItem()
 {
     return _rootItem;
+}
+
+void TestModel::updateParents(const QModelIndex &index, QVector<int> roles)
+{
+    for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent())
+        emit dataChanged(parent, parent, roles);
+}
+
+void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
+{
+    TestItem *item = static_cast<TestItem*>(index.internalPointer());
+
+    for (int i = 0; i < item->childCount(); i++) {
+        QModelIndex child = index.child(i, index.column());
+        emit dataChanged(child, child, roles);
+        updateChildren(child, roles);
+    }
 }

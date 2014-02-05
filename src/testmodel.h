@@ -33,6 +33,9 @@ private:
     TestItem *_rootItem;
 
     friend class TestItem;
+
+    void updateParents(const QModelIndex &index, QVector<int> roles = QVector<int>());
+    void updateChildren(const QModelIndex &index, QVector<int> roles = QVector<int>());
 };
 
 #endif // TESTMODEL_H
