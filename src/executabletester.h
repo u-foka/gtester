@@ -2,21 +2,23 @@
 #define EXECUTABLETESTER_H
 
 #include "executablebase.h"
-#include "testitembase.h"
+
+class TestItemExecutable;
 
 class ExecutableTester : public ExecutableBase
 {
     Q_OBJECT
 public:
-    explicit ExecutableTester(TestItemBase *parentNode, QObject *parent = 0);
-    explicit ExecutableTester(TestItemBase *parentNode, const QFileInfo &file, QObject *parent = 0);
+    explicit ExecutableTester(TestItemExecutable *parentNode, QObject *parent = 0);
+    explicit ExecutableTester(TestItemExecutable *parentNode, const QFileInfo &file, QObject *parent = 0);
+    virtual ~ExecutableTester();
 
 signals:
 
 public slots:
 
 protected:
-    TestItemBase *_parentNode;
+    TestItemExecutable *_parentNode;
 
     void parseOutput();
 };

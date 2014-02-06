@@ -12,6 +12,7 @@ class ExecutableBase : public QObject
 public:
     explicit ExecutableBase(QObject *parent = 0);
     explicit ExecutableBase(const QFileInfo &file, QObject *parent = 0);
+    virtual ~ExecutableBase();
 
 signals:
     void started();

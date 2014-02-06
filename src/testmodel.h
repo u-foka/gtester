@@ -6,6 +6,7 @@
 #include <QVariant>
 
 class TestItemBase;
+class TestItemRoot;
 
 class TestModel : public QAbstractItemModel
 {
@@ -27,10 +28,10 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-    TestItemBase * rootItem();
+    TestItemRoot *rootItem();
 
 private:
-    TestItemBase *_rootItem;
+    TestItemRoot *_rootItem;
 
     friend class TestItemBase;
 

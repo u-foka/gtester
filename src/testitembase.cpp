@@ -6,38 +6,30 @@
 
 #include "testmodel.h"
 
-enum ColumnNames {
-    ColumnName = 0,
-    ColumnState,
-    ColumnLast
-};
-
-const QList<QString> TestStateNames(QList<QString>() <<
+const QList<QString> TestItemBase::TestStateNames(QList<QString>() <<
         "Not yet run" <<
         "Passed" <<
         "Failed" <<
         "Partially passed"
         );
 
-const QList<QVariant> TestStateColors(QList<QVariant>() <<
+const QList<QVariant> TestItemBase::TestStateColors(QList<QVariant>() <<
         QColor(Qt::lightGray) <<
         QColor(Qt::green) <<
         QColor(Qt::red) <<
         QColor(Qt::yellow)
         );
 
-TestItemBase::TestItemBase(QString name, bool enabled, TestItemBase *parent) :
-    _name(name), _enabled(enabled), _state(StateNone), _parentItem(parent), _model(parent->model())
+TestItemBase::TestItemBase(TestItemBase *parent, TestModel *model) :
+    _parentItem(parent), _model(model)
 {
+    if (_parentItem == 0)
+        return;
+
     _parentItem->appendChild(this);
 
-    _model->beginInsertRows(_model->index(_parentItem), row(), row());
+    _model->beginInsertRows(_model->index(_parentItem), getRow(), getRow());
     _model->endInsertRows();
-}
-
-TestItemBase::TestItemBase(TestModel *model) :
-    _name(), _enabled(true), _state(StateNone), _parentItem(0), _model(model)
-{
 }
 
 TestItemBase::~TestItemBase()
@@ -66,7 +58,7 @@ void TestItemBase::removeChild(TestItemBase *child)
     _childItems.removeAll(child);
 }
 
-TestItemBase *TestItemBase::child(int row)
+TestItemBase *TestItemBase::getChild(int row)
 {
     return _childItems.value(row);
 }
@@ -81,49 +73,17 @@ int TestItemBase::columnCount() const
     return ColumnLast;
 }
 
-bool TestItemBase::isCheckbox(int column) const
-{
-    if (_parentItem == 0)
-        return false;
-
-    return column == ColumnName;
-}
-
-QVariant TestItemBase::bgColor(int column) const
+QVariant TestItemBase::getBackgroundColor(int column) const
 {
     switch (column) {
     case ColumnState:
-        return TestStateColors[state()];
+        return TestStateColors[getTestState()];
     default:
         return QVariant();
     }
 }
 
-QVariant TestItemBase::checkState(int column) const
-{
-    switch (column) {
-    case ColumnName:
-        return enabled();
-    default:
-        return QVariant();
-    }
-}
-
-QVariant TestItemBase::data(int column) const
-{
-    switch (column) {
-    case ColumnName:
-        if (_parentItem == 0) return "Name";
-        return _name;
-    case ColumnState:
-        if (_parentItem == 0) return "Status";
-        return TestStateNames[state()];
-    default:
-        return QVariant();
-    }
-}
-
-int TestItemBase::row() const
+int TestItemBase::getRow() const
 {
     if (_parentItem)
         return _parentItem->_childItems.indexOf(const_cast<TestItemBase*>(this));
@@ -131,58 +91,58 @@ int TestItemBase::row() const
     return 0;
 }
 
-TestItemBase *TestItemBase::parent() const
+bool TestItemBase::hasCheckbox(int column) const
 {
-    return _parentItem;
+    return column == ColumnName;
 }
 
-TestModel *TestItemBase::model() const
+QVariant TestItemBase::getCheckState(int column) const
 {
-    return _model;
-}
-
-Qt::CheckState TestItemBase::enabled() const
-{
-    if (_childItems.count() == 0)
-        return _enabled ? Qt::Checked : Qt::Unchecked;
-
-    Qt::CheckState enabled;
+    Qt::CheckState state = Qt::PartiallyChecked;
     for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
         if (it == _childItems.begin()) {
-            // Inicialize enabled with the first item
-            enabled = (*it)->enabled();
-        } else if (enabled != (*it)->enabled()) {
+            // Inicialize state with the first item
+            QVariant firstState = (*it)->getCheckState(column);
+            if (firstState.isNull()) return firstState;
+            state = static_cast<Qt::CheckState>((*it)->getCheckState(column).toInt());
+        } else if (state != (*it)->getCheckState(column).toInt()) {
             // Already have both checked and unchecked children, returning immediatelly
             return Qt::PartiallyChecked;
         }
     }
 
-    return enabled;
+    return state;
 }
 
-void TestItemBase::setEnabled(bool enabled)
+bool TestItemBase::setCheckState(int column, QVariant state)
 {
-    if (_childItems.count() == 0) {
-        _enabled = enabled;
-    }
-
     for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++)
-        (*it)->setEnabled(enabled);
+        if (! (*it)->setCheckState(column, state))
+            return false;
+
+    return true;
 }
 
-TestItemBase::TestStates TestItemBase::state() const
+TestItemBase *TestItemBase::getParent() const
 {
-    if (_childItems.count() == 0)
-        return _state;
+    return _parentItem;
+}
 
-    TestStates state;
+TestModel *TestItemBase::getModel() const
+{
+    return _model;
+}
+
+TestItemBase::TestStates TestItemBase::getTestState() const
+{
+    TestStates state = StateNone;
     for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
-        if ((*it)->state() == StateFail) {
+        if ((*it)->getTestState() == StateFail) {
             return StateFail;
         } else if (it == _childItems.begin()) {
             // Inicialize enabled with the first item
-            state = (*it)->state();
-        } else if (state != (*it)->state()) {
+            state = (*it)->getTestState();
+        } else if (state != (*it)->getTestState()) {
             // Already have both StatePass and StateNone children, returning immediatelly
             return StatePartialPass;
         }

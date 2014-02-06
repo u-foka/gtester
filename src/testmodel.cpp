@@ -2,12 +2,11 @@
 
 #include <QtGui>
 
-#include "testitembase.h"
+#include "testitemroot.h"
 
 TestModel::TestModel(QObject *parent)
-    : QAbstractItemModel(parent), _rootItem(0)
+    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this))
 {
-    _rootItem = new TestItemBase(this);
 }
 
 TestModel::~TestModel()
@@ -34,15 +33,15 @@ QVariant TestModel::data(const QModelIndex &index, int role) const
         return QColor(Qt::black);
 
     if (role == Qt::BackgroundColorRole)
-        return item->bgColor(index.column());
+        return item->getBackgroundColor(index.column());
 
-    if (role == Qt::CheckStateRole && item->isCheckbox(index.column()))
-        return item->checkState(index.column());
+    if (role == Qt::CheckStateRole && item->hasCheckbox(index.column()))
+        return item->getCheckState(index.column());
 
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    return item->data(index.column());
+    return item->getData(index.column());
 }
 
 bool TestModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -50,7 +49,7 @@ bool TestModel::setData(const QModelIndex &index, const QVariant &value, int rol
     TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
 
     if (role == Qt::CheckStateRole) {
-        item->setEnabled(value.toInt() == Qt::Checked ? true : false);
+        item->setCheckState(index.column(), value);
         QVector<int> roles;
         roles << role;
         emit dataChanged(index, index, roles);
@@ -71,7 +70,7 @@ Qt::ItemFlags TestModel::flags(const QModelIndex &index) const
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-    if (item->isCheckbox(index.column()))
+    if (item->hasCheckbox(index.column()))
         flags |= Qt::ItemIsUserCheckable;
 
     return flags;
@@ -81,7 +80,7 @@ QVariant TestModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return _rootItem->data(section);
+        return _rootItem->getData(section);
 
     return QVariant();
 }
@@ -99,7 +98,7 @@ const
     else
         parentItem = static_cast<TestItemBase*>(parent.internalPointer());
 
-    TestItemBase *childItem = parentItem->child(row);
+    TestItemBase *childItem = parentItem->getChild(row);
     if (childItem)
         return createIndex(row, column, childItem);
     else
@@ -111,7 +110,7 @@ QModelIndex TestModel::index(TestItemBase *item) const
     if (item == _rootItem)
         return QModelIndex();
 
-    return createIndex(item->row(), 0, item);
+    return createIndex(item->getRow(), 0, item);
 }
 
 QModelIndex TestModel::parent(const QModelIndex &index) const
@@ -120,12 +119,12 @@ QModelIndex TestModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     TestItemBase *childItem = static_cast<TestItemBase*>(index.internalPointer());
-    TestItemBase *parentItem = childItem->parent();
+    TestItemBase *parentItem = childItem->getParent();
 
     if (parentItem == _rootItem)
         return QModelIndex();
 
-    return createIndex(parentItem->row(), 0, parentItem);
+    return createIndex(parentItem->getRow(), 0, parentItem);
 }
 
 int TestModel::rowCount(const QModelIndex &parent) const
@@ -142,7 +141,7 @@ int TestModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
-TestItemBase * TestModel::rootItem()
+TestItemRoot * TestModel::rootItem()
 {
     return _rootItem;
 }

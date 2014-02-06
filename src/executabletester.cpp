@@ -3,13 +3,20 @@
 #include <stdexcept>
 #include <QRegExp>
 
-ExecutableTester::ExecutableTester(TestItemBase *parentNode, QObject *parent) :
+#include "testitemcase.h"
+#include "testitem.h"
+
+ExecutableTester::ExecutableTester(TestItemExecutable *parentNode, QObject *parent) :
     ExecutableBase(parent), _parentNode(parentNode)
 {
 }
 
-ExecutableTester::ExecutableTester(TestItemBase *parentNode, const QFileInfo &file, QObject *parent) :
+ExecutableTester::ExecutableTester(TestItemExecutable *parentNode, const QFileInfo &file, QObject *parent) :
     ExecutableBase(file, parent), _parentNode(parentNode)
+{
+}
+
+ExecutableTester::~ExecutableTester()
 {
 }
 
@@ -18,16 +25,16 @@ void ExecutableTester::parseOutput()
     const QRegExp testCaseMatch("^([\\w_]+)\\.$");
     const QRegExp testNameMatch("^\\s+([\\w_]+)$");
 
-    TestItemBase *currentCase = 0;
+    TestItemCase *currentCase = 0;
 
     QString line;
     while ((line = _stdinStream.readLine()) != 0) {
         if (testCaseMatch.exactMatch(line)) {
-            currentCase = new TestItemBase(testCaseMatch.capturedTexts().at(1), true, _parentNode);
+            currentCase = new TestItemCase(testCaseMatch.capturedTexts().at(1), _parentNode);
         } else if (testNameMatch.exactMatch(line)) {
             if (currentCase == 0)
                 throw std::runtime_error("Found test before test case");
-            new TestItemBase(testNameMatch.capturedTexts().at(1), true, currentCase);
+            new TestItem(testNameMatch.capturedTexts().at(1), currentCase);
         }
     }
 }

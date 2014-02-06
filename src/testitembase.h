@@ -1,5 +1,5 @@
-#ifndef TESTITEM_H
-#define TESTITEM_H
+#ifndef TESTITEMBASE_H
+#define TESTITEMBASE_H
 
 #include <QList>
 #include <QVariant>
@@ -9,6 +9,31 @@ class TestModel;
 class TestItemBase
 {
 public:
+    TestItemBase(TestItemBase *parent, TestModel *model);
+    virtual ~TestItemBase();
+
+    TestItemBase *getChild(int getRow);
+    int childCount() const;
+    int columnCount() const;
+    int getRow() const;
+
+    virtual bool hasCheckbox(int column) const;
+    virtual QVariant getCheckState(int column) const;
+    virtual bool setCheckState(int column, QVariant state);
+
+    virtual QVariant getBackgroundColor(int column) const;
+    virtual QVariant getData(int column) const =0;
+
+    TestItemBase *getParent() const;
+    TestModel *getModel() const;
+
+protected:
+    enum ColumnNames {
+        ColumnName = 0,
+        ColumnState,
+        ColumnLast
+    };
+
     enum TestStates {
         StateNone = 0,
         StatePass,
@@ -16,37 +41,19 @@ public:
         StatePartialPass
     };
 
-    TestItemBase(QString name, bool enabled, TestItemBase *parent);
-    TestItemBase(TestModel *model);
-    ~TestItemBase();
+    static const QList<QString> TestStateNames;
+    static const QList<QVariant> TestStateColors;
 
-    void appendChild(TestItemBase *child);
-    void removeChild(TestItemBase *child);
-
-    TestItemBase *child(int row);
-    int childCount() const;
-    int columnCount() const;
-    bool isCheckbox(int column) const;
-    QVariant bgColor(int column) const;
-    QVariant checkState(int column) const;
-    QVariant data(int column) const;
-    int row() const;
-    TestItemBase *parent() const;
-    TestModel *model() const;
-
-    Qt::CheckState enabled() const;
-    void setEnabled(bool enabled);
-    TestStates state() const;
+    virtual TestStates getTestState() const;
 
 private:
     QList<TestItemBase*> _childItems;
 
-    QString _name;
-    bool _enabled;
-    TestStates _state;
-
     TestItemBase *_parentItem;
     TestModel *_model;
+
+    void appendChild(TestItemBase *getChild);
+    void removeChild(TestItemBase *getChild);
 };
 
-#endif // TESTITEM_H
+#endif // TESTITEMBASE_H

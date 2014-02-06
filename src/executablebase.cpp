@@ -8,6 +8,10 @@ ExecutableBase::ExecutableBase(QObject *parent) :
     setupSignals();
 }
 
+ExecutableBase::~ExecutableBase()
+{
+}
+
 ExecutableBase::ExecutableBase(const QFileInfo &file, QObject *parent) :
     QObject(parent), _proc(this), _file(file), _stdin(), _stderr(), _stdinStream(&_stdin), _stderrStream(&_stderr)
 {

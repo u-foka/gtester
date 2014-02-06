@@ -5,6 +5,7 @@
 #include <QFileDialog>
 
 #include "executabletester.h"
+#include "testitemexecutable.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -68,7 +69,7 @@ void MainWindow::on_actionAdd_test_executable_triggered()
     QFileInfo fileInfo(fileName);
 
     ExecutableTester *tester = new ExecutableTester(
-                new TestItemBase(fileInfo.fileName(), true, _model.rootItem()),
+                new TestItemExecutable(fileInfo, _model.rootItem()),
                 fileInfo, this);
     tester->execute();
 
