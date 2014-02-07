@@ -4,7 +4,6 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 
-#include "executabletester.h"
 #include "testitemexecutable.h"
 
 #define SETTINGS_VERSION "Version"
@@ -66,12 +65,5 @@ void MainWindow::on_actionAdd_test_executable_triggered()
     if (fileName.isEmpty())
         return;
 
-    QFileInfo fileInfo(fileName);
-
-    ExecutableTester *tester = new ExecutableTester(
-                new TestItemExecutable(fileInfo, _model.rootItem()),
-                fileInfo, this);
-    tester->execute();
-
-
+    _model.addExecutable(fileName);
 }

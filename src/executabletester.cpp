@@ -3,16 +3,12 @@
 #include <stdexcept>
 #include <QRegExp>
 
+#include "testitemexecutable.h"
 #include "testitemcase.h"
 #include "testitem.h"
 
 ExecutableTester::ExecutableTester(TestItemExecutable *parentNode, QObject *parent) :
-    ExecutableBase(parent), _parentNode(parentNode)
-{
-}
-
-ExecutableTester::ExecutableTester(TestItemExecutable *parentNode, const QFileInfo &file, QObject *parent) :
-    ExecutableBase(file, parent), _parentNode(parentNode)
+    ExecutableBase(parentNode->getFileInfo(), QStringList() << "--gtest_list_tests", parent), _parentNode(parentNode)
 {
 }
 

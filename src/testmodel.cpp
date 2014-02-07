@@ -3,6 +3,8 @@
 #include <QtGui>
 
 #include "testitemroot.h"
+#include "testitemexecutable.h"
+#include "executabletester.h"
 
 TestModel::TestModel(QObject *parent)
     : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this))
@@ -161,4 +163,59 @@ void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
         emit dataChanged(child, child, roles);
         updateChildren(child, roles);
     }
+}
+
+void TestModel::execute()
+{
+
+}
+
+void TestModel::terminate()
+{
+
+}
+
+void TestModel::addExecutable(QString fileName)
+{
+    refresh(index( new TestItemExecutable(QFileInfo(fileName), rootItem()) ));
+}
+
+void TestModel::refresh(const QModelIndex &index)
+{
+    refresh(static_cast<TestItemBase*>(index.internalPointer()));
+}
+
+void TestModel::refresh(TestItemBase *item)
+{
+    // Check if the given item is the root item
+    TestItemRoot *root = dynamic_cast<TestItemRoot*>(item);
+    if (root != 0) {
+        // If we got the root item, refresh each executable
+        for (int i = 0; i < root->childCount(); i++) {
+            TestItemExecutable *exec = dynamic_cast<TestItemExecutable*>(root->getChild(i));
+            if (exec == 0) continue;
+
+            refresh(exec);
+        }
+
+        return;
+    }
+
+    // If we got anything else, let's go trough the items up to the executable
+    TestItemExecutable *exec = 0;
+    while (exec == 0 && item != 0) {
+        exec = dynamic_cast<TestItemExecutable*>(item);
+        if (exec != 0) {
+            refresh(exec);
+            return;
+        }
+
+        item = item->getParent();
+    }
+}
+
+void TestModel::refresh(TestItemExecutable *item)
+{
+    ExecutableTester *tester = new ExecutableTester(item, this);
+    tester->execute();
 }

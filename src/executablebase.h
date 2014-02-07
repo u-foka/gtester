@@ -10,8 +10,7 @@ class ExecutableBase : public QObject
 {
     Q_OBJECT
 public:
-    explicit ExecutableBase(QObject *parent = 0);
-    explicit ExecutableBase(const QFileInfo &file, QObject *parent = 0);
+    ExecutableBase(const QFileInfo &file, const QStringList &args, QObject *parent);
     virtual ~ExecutableBase();
 
 signals:
@@ -34,6 +33,7 @@ private slots:
 protected:
     QProcess _proc;
     QFileInfo _file;
+    QStringList _args;
     QByteArray _stdin;
     QByteArray _stderr;
     QTextStream _stdinStream;

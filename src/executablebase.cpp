@@ -2,8 +2,9 @@
 
 #include <stdexcept>
 
-ExecutableBase::ExecutableBase(QObject *parent) :
-    QObject(parent), _proc(this), _file(), _stdin(), _stderr(), _stdinStream(&_stdin), _stderrStream(&_stderr)
+ExecutableBase::ExecutableBase(const QFileInfo &file, const QStringList &args, QObject *parent) :
+    QObject(parent), _proc(this), _file(file), _args(args), _stdin(), _stderr(),
+    _stdinStream(&_stdin), _stderrStream(&_stderr)
 {
     setupSignals();
 }
@@ -12,22 +13,13 @@ ExecutableBase::~ExecutableBase()
 {
 }
 
-ExecutableBase::ExecutableBase(const QFileInfo &file, QObject *parent) :
-    QObject(parent), _proc(this), _file(file), _stdin(), _stderr(), _stdinStream(&_stdin), _stderrStream(&_stderr)
-{
-    setupSignals();
-}
-
 void ExecutableBase::execute()
 {
     if (! _file.isFile() || ! _file.isExecutable()) {
         throw std::runtime_error("Unable to run file");
     }
 
-    QStringList args;
-    args << "--gtest_list_tests";
-
-    _proc.start(_file.absoluteFilePath(), args);
+    _proc.start(_file.absoluteFilePath(), _args);
 }
 
 void ExecutableBase::terminate()

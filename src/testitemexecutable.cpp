@@ -23,3 +23,7 @@ QVariant TestItemExecutable::getData(int column) const
     }
 }
 
+const QFileInfo & TestItemExecutable::getFileInfo() const
+{
+    return _file;
+}

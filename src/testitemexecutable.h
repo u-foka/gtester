@@ -15,6 +15,8 @@ public:
 
     virtual QVariant getData(int column) const;
 
+    const QFileInfo & getFileInfo() const;
+
 private:
     QFileInfo _file;
 

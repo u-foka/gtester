@@ -10,7 +10,6 @@ class ExecutableTester : public ExecutableBase
     Q_OBJECT
 public:
     explicit ExecutableTester(TestItemExecutable *parentNode, QObject *parent = 0);
-    explicit ExecutableTester(TestItemExecutable *parentNode, const QFileInfo &file, QObject *parent = 0);
     virtual ~ExecutableTester();
 
 signals:

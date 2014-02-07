@@ -7,6 +7,7 @@
 
 class TestItemBase;
 class TestItemRoot;
+class TestItemExecutable;
 
 class TestModel : public QAbstractItemModel
 {
@@ -29,6 +30,19 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     TestItemRoot *rootItem();
+
+signals:
+    void started();
+    void finished();
+    void terminated();
+
+public slots:
+    void execute();
+    void terminate();
+    void addExecutable(QString fileName);
+    void refresh(const QModelIndex &index = QModelIndex());
+    void refresh(TestItemBase *item);
+    void refresh(TestItemExecutable *item);
 
 private:
     TestItemRoot *_rootItem;
