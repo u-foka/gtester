@@ -34,28 +34,13 @@ TestItemBase::TestItemBase(TestItemBase *parent, TestModel *model) :
 
 TestItemBase::~TestItemBase()
 {
+    deleteChildren();
+
+    if (_parentItem == 0)
+        return;
+
     if (_parentItem != 0)
         _parentItem->removeChild(this);
-
-    // Need to delete children in reverse order because they will
-    // remove themselfs from this list in their destructor
-    QList<TestItemBase*>::Iterator it = _childItems.end();
-    while (it != _childItems.begin())
-        delete *--it;
-}
-
-void TestItemBase::appendChild(TestItemBase *item)
-{
-    if (_childItems.indexOf(item) >= 0) {
-        throw std::runtime_error("Cannot append duplicate child item");
-    }
-
-    _childItems.append(item);
-}
-
-void TestItemBase::removeChild(TestItemBase *child)
-{
-    _childItems.removeAll(child);
 }
 
 TestItemBase *TestItemBase::getChild(int row)
@@ -149,4 +134,27 @@ TestItemBase::TestStates TestItemBase::getTestState() const
     }
 
     return state;
+}
+
+void TestItemBase::deleteChildren()
+{
+    // Need to delete children in reverse order because they will
+    // remove themselfs from this list in their destructor
+    QList<TestItemBase*>::Iterator it = _childItems.end();
+    while (it != _childItems.begin())
+        delete *--it;
+}
+
+void TestItemBase::appendChild(TestItemBase *item)
+{
+    if (_childItems.indexOf(item) >= 0) {
+        throw std::runtime_error("Cannot append duplicate child item");
+    }
+
+    _childItems.append(item);
+}
+
+void TestItemBase::removeChild(TestItemBase *child)
+{
+    _childItems.removeAll(child);
 }

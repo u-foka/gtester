@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg11300" sodipodi:docname="go-next.svg" sodipodi:docbase="/home/tigert/cvs/freedesktop.org/tango-icon-theme/scalable/actions" inkscape:version="0.46" sodipodi:version="0.32" inkscape:export-filename="/home/jimmac/Desktop/wi-fi.png" inkscape:export-ydpi="90.000000" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:export-xdpi="90.000000" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="47.335px"
+	 height="47.936px" viewBox="-1.312 3.278 47.335 47.936" enable-background="new -1.312 3.278 47.335 47.936" xml:space="preserve"
+	>
+<symbol  id="svg_9" viewBox="-140 -107.5 280 215">
+	<g id="svg_7_1_">
+		<path id="svg_8_1_" fill="#A80000" d="M-140,17.5l100,90l180-180l-35-35l-145,145l-60-60L-140,17.5z"/>
+	</g>
+</symbol>
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="48 : 24 : 1" id="perspective23" sodipodi:type="inkscape:persp3d" inkscape:vp_x="0 : 24 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:persp3d-origin="24 : 16 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  fill="#4e9a06" stroke="#4e9a06" inkscape:window-width="1280" id="base" showgrid="false" inkscape:window-x="0" inkscape:window-y="30" inkscape:window-height="818" inkscape:showpageshadow="false" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:zoom="11.313708" inkscape:current-layer="layer1" inkscape:cy="27.398876" inkscape:cx="20.508639" inkscape:pageshadow="2" inkscape:pageopacity="0.0" borderopacity="0.25490196" bordercolor="#666666" pagecolor="#ffffff">
+	</sodipodi:namedview>
+<g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
+	
+		<radialGradient id="path8660_1_" cx="-108.8052" cy="1198.9968" r="15.6458" gradientTransform="matrix(1.2712 0 0 0.6823 161.7667 -786.8795)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#000000"/>
+		<stop  offset="1" style="stop-color:#000000;stop-opacity:0"/>
+	</radialGradient>
+	
+		<path id="path8660" sodipodi:type="arc" sodipodi:cx="24.837126" sodipodi:cy="36.421127" sodipodi:ry="8.3968935" sodipodi:rx="15.644737" opacity="0.2995" fill="url(#path8660_1_)" enable-background="new    " d="
+		M43.34,31.196c0.004,5.896-8.896,10.675-19.88,10.677c-10.983,0.002-19.89-4.774-19.894-10.67c0-0.002,0-0.005,0-0.007
+		C3.563,25.3,12.463,20.52,23.447,20.519c10.983-0.002,19.892,4.775,19.894,10.67C43.34,31.191,43.34,31.193,43.34,31.196z"/>
+	
+		<radialGradient id="path8643_1_" cx="107.2466" cy="810.366" r="16.9569" gradientTransform="matrix(0.843 0 0 1.0202 -67.1162 -791.8928)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#73D216"/>
+		<stop  offset="1" style="stop-color:#4E9A06"/>
+	</radialGradient>
+	
+		<path id="path8643" sodipodi:nodetypes="cccccccc" fill="url(#path8643_1_)" stroke="#3A7304" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+		M8.554,15.518v16.994h12.984v8.545l19.96-16.906L21.419,7.125v8.397L8.554,15.518z"/>
+	
+		<radialGradient id="path8645_1_" cx="-276.5845" cy="511.946" r="17.1702" gradientTransform="matrix(2.0467 0 0 1.5576 586.8925 -789.4415)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#FFFFFF"/>
+		<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+	</radialGradient>
+	<path id="path8645" sodipodi:nodetypes="cccccc" opacity="0.508" fill="url(#path8645_1_)" enable-background="new    " d="
+		M21.962,8.249v7.808H9.145v9.041c17.75,2,16.634-7.455,31.384-0.955L21.962,8.249z"/>
+	
+		<path id="path8658" sodipodi:nodetypes="cccccccc" opacity="0.4813" fill="none" stroke="#FFFFFF" stroke-miterlimit="10" enable-background="new    " d="
+		M9.538,16.562v14.984h12.985v7.396L40,24.147L22.507,9.365v7.202L9.538,16.562z"/>
+</g>
+<path id="G" fill="#0860A8" d="M43.553,47.944l-9.312,2.146c-3.77,0.6-7.166,1.123-10.744,1.123
+	c-17.973,0-24.809-13.231-24.809-23.567C-1.313,15,8.39,3.278,25.002,3.278c3.521,0,6.892,0.521,9.963,1.368
+	c4.867,1.368,7.164,3.061,8.588,4.037l-5.393,5.146l-2.298,0.52l1.647-2.606c-2.223-2.146-6.268-6.12-13.946-6.12
+	c-10.292,0-18.042,7.817-18.042,19.211c0,12.25,8.858,23.76,23.049,23.76c4.17,0,6.316-0.823,8.266-1.622V36.484l-9.812,0.523
+	l5.193-2.797h13.806l-1.696,1.623c-0.451,0.399-0.5,0.524-0.65,1.049c-0.049,0.574-0.125,2.473-0.125,3.121v7.94H43.553
+	L43.553,47.944z"/>
+<g>
+	<g id="layer2">
+		<path id="rect2816" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="round" d="M11.498,17.649h1.742
+			c0.421,0,0.761,0.309,0.761,0.692v1.877c0,0.385-0.339,0.693-0.761,0.693h-1.742c-0.422,0-0.761-0.31-0.761-0.693v-1.877
+			C10.737,17.958,11.076,17.649,11.498,17.649z"/>
+	</g>
+	
+		<use xlink:href="#svg_9"  width="280" height="215" id="svg_10" x="-140" y="-107.5" transform="matrix(0.0169 0 0 0.0169 12.7046 19.5916)" overflow="visible"/>
+</g>
+<g>
+	<g id="layer2_1_">
+		<path id="rect2816_1_" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="round" d="M11.559,22.274h1.742
+			c0.421,0,0.761,0.309,0.761,0.692v1.877c0,0.385-0.339,0.693-0.761,0.693h-1.742c-0.422,0-0.761-0.31-0.761-0.693v-1.877
+			C10.798,22.583,11.137,22.274,11.559,22.274z"/>
+	</g>
+	
+		<use xlink:href="#svg_9"  width="280" height="215" id="svg_10_1_" x="-140" y="-107.5" transform="matrix(0.0169 0 0 0.0169 12.7661 24.2166)" overflow="visible"/>
+</g>
+<g>
+	<g id="layer2_2_">
+		<path id="rect2816_2_" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="round" d="M11.571,26.779h1.742
+			c0.421,0,0.761,0.309,0.761,0.693v1.877c0,0.384-0.339,0.692-0.761,0.692h-1.742c-0.422,0-0.761-0.31-0.761-0.692v-1.877
+			C10.811,27.088,11.149,26.779,11.571,26.779z"/>
+	</g>
+	
+		<use xlink:href="#svg_9"  width="280" height="215" id="svg_10_2_" x="-140" y="-107.5" transform="matrix(0.0169 0 0 0.0169 12.7783 28.7214)" overflow="visible"/>
+</g>
+</svg>

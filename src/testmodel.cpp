@@ -180,9 +180,50 @@ void TestModel::addExecutable(QString fileName)
     refresh(index( new TestItemExecutable(QFileInfo(fileName), rootItem()) ));
 }
 
+void TestModel::removeExecutable(const QModelIndex index)
+{
+    removeExecutable( static_cast<TestItemBase*>(index.internalPointer()) );
+}
+
+void TestModel::removeExecutable(TestItemBase *item)
+{
+    // Check if the given item is the root item
+    TestItemRoot *root = dynamic_cast<TestItemRoot*>(item);
+    if (root != 0) {
+        // If we got the root item, refresh each executable
+        for (int i = 0; i < root->childCount(); i++) {
+            TestItemExecutable *exec = dynamic_cast<TestItemExecutable*>(root->getChild(i));
+            if (exec == 0) continue;
+
+            removeExecutable(exec);
+        }
+
+        return;
+    }
+
+    // If we got anything else, let's go trough the items up to the executable
+    TestItemExecutable *exec = 0;
+    while (exec == 0 && item != 0) {
+        exec = dynamic_cast<TestItemExecutable*>(item);
+        if (exec != 0) {
+            removeExecutable(exec);
+            return;
+        }
+
+        item = item->getParent();
+    }
+}
+
+void TestModel::removeExecutable(TestItemExecutable *item)
+{
+    beginRemoveRows(index(item->getParent()), item->getRow(), item->getRow());
+    delete item;
+    endRemoveRows();
+}
+
 void TestModel::refresh(const QModelIndex &index)
 {
-    refresh(static_cast<TestItemBase*>(index.internalPointer()));
+    refresh( static_cast<TestItemBase*>(index.internalPointer()) );
 }
 
 void TestModel::refresh(TestItemBase *item)
@@ -216,6 +257,10 @@ void TestModel::refresh(TestItemBase *item)
 
 void TestModel::refresh(TestItemExecutable *item)
 {
+    beginRemoveRows(index(item), 0, item->childCount());
+    item->deleteChildren();
+    endRemoveRows();
+
     ExecutableTester *tester = new ExecutableTester(item, this);
     tester->execute();
 }

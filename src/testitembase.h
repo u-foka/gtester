@@ -27,6 +27,8 @@ public:
     TestItemBase *getParent() const;
     TestModel *getModel() const;
 
+    void deleteChildren();
+
 protected:
     enum ColumnNames {
         ColumnName = 0,

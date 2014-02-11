@@ -19,11 +19,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
     _ui->testsTree->setModel(&_model);
+    _ui->testsTree->setSelectionMode(QTreeView::SingleSelection);
+    _ui->testsTree->setSelectionBehavior(QTreeView::SelectRows);
     _ui->testsTree->header()->resizeSection(0, 250);
 
     // Setup splitter
     _ui->splitter->setStretchFactor(0, 1);
     _ui->splitter->setStretchFactor(1, 0);
+
+    connect(_ui->testsTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(on_testsTree_selectionChanged(QItemSelection,QItemSelection)));
 
     // Restore geometry
     restoreGeometry(_settings.value(SETTINGS_WINDOW_GEOMETRY).toByteArray());
@@ -66,4 +71,28 @@ void MainWindow::on_actionAdd_test_executable_triggered()
         return;
 
     _model.addExecutable(fileName);
+}
+
+void MainWindow::on_actionRefresh_tests_triggered()
+{
+    QModelIndexList sel = _ui->testsTree->selectionModel()->selectedIndexes();
+    if (sel.count() > 0) {
+        _model.refresh(sel.first());
+    }
+}
+
+void MainWindow::on_actionRemove_test_executable_triggered()
+{
+    QModelIndexList sel = _ui->testsTree->selectionModel()->selectedIndexes();
+    if (sel.count() > 0) {
+        _model.removeExecutable(sel.first());
+    }
+}
+
+void MainWindow::on_testsTree_selectionChanged(QItemSelection newSel, QItemSelection /*oldSel*/)
+{
+    bool hasSel = newSel.count();
+
+    _ui->actionRemove_test_executable->setEnabled(hasSel);
+    _ui->actionRefresh_tests->setEnabled(hasSel);
 }

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSettings>
+#include <QItemSelection>
 
 #include "testmodel.h"
 
@@ -19,11 +20,12 @@ public:
     virtual ~MainWindow();
 
 private slots:
-
-
     void on_actionRun_selected_triggered();
-
     void on_actionAdd_test_executable_triggered();
+    void on_actionRefresh_tests_triggered();
+    void on_actionRemove_test_executable_triggered();
+
+    void on_testsTree_selectionChanged(QItemSelection newSel, QItemSelection oldSel);
 
 protected:
     void closeEvent(QCloseEvent *event);

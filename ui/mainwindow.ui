@@ -263,6 +263,9 @@
    </property>
   </action>
   <action name="actionRemove_test_executable">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
      <normaloff>:/icons/list-remove.png</normaloff>:/icons/list-remove.png</iconset>

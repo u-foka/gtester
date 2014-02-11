@@ -5,6 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GTester
 TEMPLATE = app
 
+ICON = resources/gtester.icns
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \

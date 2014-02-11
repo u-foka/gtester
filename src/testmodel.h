@@ -40,6 +40,9 @@ public slots:
     void execute();
     void terminate();
     void addExecutable(QString fileName);
+    void removeExecutable(const QModelIndex index);
+    void removeExecutable(TestItemBase *item);
+    void removeExecutable(TestItemExecutable *item);
     void refresh(const QModelIndex &index = QModelIndex());
     void refresh(TestItemBase *item);
     void refresh(TestItemExecutable *item);
