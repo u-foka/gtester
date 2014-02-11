@@ -19,6 +19,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
 
+    bool getRunning() const;
+
+public slots:
+    void setRunning(bool getRunning);
+
 private slots:
     void on_actionRun_selected_triggered();
     void on_actionAdd_test_executable_triggered();

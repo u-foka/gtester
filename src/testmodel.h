@@ -5,6 +5,7 @@
 #include <QModelIndex>
 #include <QVariant>
 
+class ExecutableBase;
 class TestItemBase;
 class TestItemRoot;
 class TestItemExecutable;
@@ -34,7 +35,8 @@ public:
 signals:
     void started();
     void finished();
-    void terminated();
+    void terminated(QString msg);
+    void executionStateChanged(bool running);
 
 public slots:
     void execute();
@@ -47,13 +49,21 @@ public slots:
     void refresh(TestItemBase *item);
     void refresh(TestItemExecutable *item);
 
+private slots:
+    void jobExecuted();
+    void jobFinished();
+    void jobTerminated();
+
 private:
     TestItemRoot *_rootItem;
+    QList<ExecutableBase*> _pendingJobs;
 
-    friend class TestItemBase;
+    void queueJob(ExecutableBase *job);
 
     void updateParents(const QModelIndex &index, QVector<int> roles = QVector<int>());
     void updateChildren(const QModelIndex &index, QVector<int> roles = QVector<int>());
+
+    friend class TestItemBase;
 };
 
 #endif // TESTMODEL_H

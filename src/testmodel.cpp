@@ -4,6 +4,7 @@
 
 #include "testitemroot.h"
 #include "testitemexecutable.h"
+#include "executablebase.h"
 #include "executabletester.h"
 
 TestModel::TestModel(QObject *parent)
@@ -148,23 +149,6 @@ TestItemRoot * TestModel::rootItem()
     return _rootItem;
 }
 
-void TestModel::updateParents(const QModelIndex &index, QVector<int> roles)
-{
-    for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent())
-        emit dataChanged(parent, parent, roles);
-}
-
-void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
-{
-    TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
-
-    for (int i = 0; i < item->childCount(); i++) {
-        QModelIndex child = index.child(i, index.column());
-        emit dataChanged(child, child, roles);
-        updateChildren(child, roles);
-    }
-}
-
 void TestModel::execute()
 {
 
@@ -261,6 +245,58 @@ void TestModel::refresh(TestItemExecutable *item)
     item->deleteChildren();
     endRemoveRows();
 
-    ExecutableTester *tester = new ExecutableTester(item, this);
-    tester->execute();
+    queueJob(new ExecutableTester(item, this));
+}
+
+void TestModel::jobExecuted()
+{
+    emit execute();
+    emit executionStateChanged(true);
+}
+
+void TestModel::jobFinished()
+{
+    emit executionStateChanged(false);
+    emit finished();
+
+    delete _pendingJobs.first();
+    _pendingJobs.pop_front();
+    if (_pendingJobs.count() > 0)
+        _pendingJobs[0]->execute();
+}
+
+void TestModel::jobTerminated()
+{
+    emit executionStateChanged(false);
+    emit terminated("Unknown error");
+}
+
+void TestModel::queueJob(ExecutableBase *job)
+{
+    connect(job, SIGNAL(started()), this, SLOT(jobExecuted()));
+    connect(job, SIGNAL(finished()), this, SLOT(jobFinished()));
+    connect(job, SIGNAL(terminated()), this, SLOT(jobTerminated()));
+
+    _pendingJobs.append(job);
+
+    if (_pendingJobs.count() == 1)
+        job->execute();
+
+}
+
+void TestModel::updateParents(const QModelIndex &index, QVector<int> roles)
+{
+    for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent())
+        emit dataChanged(parent, parent, roles);
+}
+
+void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
+{
+    TestItemBase *item = static_cast<TestItemBase*>(index.internalPointer());
+
+    for (int i = 0; i < item->childCount(); i++) {
+        QModelIndex child = index.child(i, index.column());
+        emit dataChanged(child, child, roles);
+        updateChildren(child, roles);
+    }
 }

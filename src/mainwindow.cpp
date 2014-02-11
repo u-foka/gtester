@@ -15,7 +15,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
-    _settings()
+    _settings(),
+    _model(), // Don't give it the window as parent since the destructor will destroy it anyway
+    _running(false)
 {
     _ui->setupUi(this);
     _ui->testsTree->setModel(&_model);
@@ -30,6 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_ui->testsTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(on_testsTree_selectionChanged(QItemSelection,QItemSelection)));
 
+    connect(&_model, SIGNAL(executionStateChanged(bool)), this, SLOT(setRunning(bool)));
+    connect(_ui->actionRun_selected, SIGNAL(triggered()), &_model, SLOT(execute()));
+    connect(_ui->actionTerminate, SIGNAL(triggered()), &_model, SLOT(terminate()));
+
     // Restore geometry
     restoreGeometry(_settings.value(SETTINGS_WINDOW_GEOMETRY).toByteArray());
     restoreState(_settings.value(SETTINGS_WINDOW_STATE).toByteArray());
@@ -42,6 +48,29 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete _ui;
+}
+
+bool MainWindow::getRunning() const
+{
+    return _running;
+}
+
+void MainWindow::setRunning(bool running)
+{
+    _running = running;
+    bool hasSelection = _ui->testsTree->selectionModel()->selectedIndexes().count() > 0;
+
+    _ui->actionNew->setEnabled(!_running);
+    _ui->actionOpen->setEnabled(!_running);
+    _ui->actionSave->setEnabled(!_running);
+    _ui->actionSave_As->setEnabled(!_running);
+    _ui->actionQuit->setEnabled(!_running);
+
+    _ui->actionAdd_test_executable->setEnabled(!_running);
+    _ui->actionRemove_test_executable->setEnabled(!_running && hasSelection);
+    _ui->actionRun_selected->setEnabled(!_running);
+    _ui->actionRefresh_tests->setEnabled(!_running && hasSelection);
+    _ui->actionTerminate->setEnabled(_running);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -61,11 +90,15 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::on_actionRun_selected_triggered()
 {
-
+    if (_running)
+        return;
 }
 
 void MainWindow::on_actionAdd_test_executable_triggered()
 {
+    if (_running)
+        return;
+
     QString fileName = QFileDialog::getOpenFileName(this, "Open test executable");
     if (fileName.isEmpty())
         return;
@@ -75,6 +108,9 @@ void MainWindow::on_actionAdd_test_executable_triggered()
 
 void MainWindow::on_actionRefresh_tests_triggered()
 {
+    if (_running)
+        return;
+
     QModelIndexList sel = _ui->testsTree->selectionModel()->selectedIndexes();
     if (sel.count() > 0) {
         _model.refresh(sel.first());
@@ -83,6 +119,9 @@ void MainWindow::on_actionRefresh_tests_triggered()
 
 void MainWindow::on_actionRemove_test_executable_triggered()
 {
+    if (_running)
+        return;
+
     QModelIndexList sel = _ui->testsTree->selectionModel()->selectedIndexes();
     if (sel.count() > 0) {
         _model.removeExecutable(sel.first());
@@ -91,8 +130,8 @@ void MainWindow::on_actionRemove_test_executable_triggered()
 
 void MainWindow::on_testsTree_selectionChanged(QItemSelection newSel, QItemSelection /*oldSel*/)
 {
-    bool hasSel = newSel.count();
+    bool enabled = newSel.count() > 0 && !_running;
 
-    _ui->actionRemove_test_executable->setEnabled(hasSel);
-    _ui->actionRefresh_tests->setEnabled(hasSel);
+    _ui->actionRemove_test_executable->setEnabled(enabled);
+    _ui->actionRefresh_tests->setEnabled(enabled);
 }
