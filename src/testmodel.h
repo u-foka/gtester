@@ -25,7 +25,7 @@ public:
                         int role = Qt::DisplayRole) const;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex index(TestItemBase *item) const;
+    QModelIndex index(TestItemBase *item, int column = 0) const;
     QModelIndex parent(const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -61,10 +61,12 @@ private:
 
     void queueJob(ExecutableBase *job);
 
-    void updateParents(const QModelIndex &index, QVector<int> roles = QVector<int>());
+    void update(const QModelIndex &index, QVector<int> roles = QVector<int>());
+    void updateParents(const QModelIndex &index, QVector<int> roles = QVector<int>(), int column = 0);
     void updateChildren(const QModelIndex &index, QVector<int> roles = QVector<int>());
 
     friend class TestItemBase;
+    friend class TestItem;
 };
 
 #endif // TESTMODEL_H

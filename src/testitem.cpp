@@ -1,6 +1,7 @@
 #include "testitem.h"
 
 #include "testitemcase.h"
+#include "testmodel.h"
 
 TestItem::TestItem(QString name, TestItemCase *parent) :
     TestItemBase(parent, parent->getModel()), _name(name), _enabled(true), _state(StateNone)
@@ -53,6 +54,13 @@ TestItem::TestStates TestItem::getTestState() const
 void TestItem::setTestState(TestStates state)
 {
     _state = state;
+
+    QModelIndex index = getModel()->index(this, ColumnState);
+    QVector<int> roles;
+    roles << Qt::DisplayRole;
+
+    getModel()->update(index, roles);
+    getModel()->updateParents(index, roles, ColumnState);
 }
 
 const QString & TestItem::getName() const

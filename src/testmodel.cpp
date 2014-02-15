@@ -109,12 +109,12 @@ const
         return QModelIndex();
 }
 
-QModelIndex TestModel::index(TestItemBase *item) const
+QModelIndex TestModel::index(TestItemBase *item, int column) const
 {
     if (item == _rootItem)
         return QModelIndex();
 
-    return createIndex(item->getRow(), 0, item);
+    return createIndex(item->getRow(), column, item);
 }
 
 QModelIndex TestModel::parent(const QModelIndex &index) const
@@ -303,10 +303,17 @@ void TestModel::queueJob(ExecutableBase *job)
         job->execute();
 }
 
-void TestModel::updateParents(const QModelIndex &index, QVector<int> roles)
+void TestModel::update(const QModelIndex &index, QVector<int> roles)
 {
-    for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent())
-        emit dataChanged(parent, parent, roles);
+    emit dataChanged(index, index, roles);
+}
+
+void TestModel::updateParents(const QModelIndex &index, QVector<int> roles, int column)
+{
+    for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent()) {
+        QModelIndex colIndex = this->index(parent.row(), column, parent.parent());
+        emit dataChanged(colIndex, colIndex, roles);
+    }
 }
 
 void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
@@ -319,3 +326,4 @@ void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
         updateChildren(child, roles);
     }
 }
+
