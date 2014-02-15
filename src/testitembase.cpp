@@ -43,7 +43,7 @@ TestItemBase::~TestItemBase()
         _parentItem->removeChild(this);
 }
 
-TestItemBase *TestItemBase::getChild(int row)
+TestItemBase *TestItemBase::getChild(int row) const
 {
     return _childItems.value(row);
 }

@@ -13,10 +13,26 @@ public:
     ExecutableBase(const QFileInfo &file, const QStringList &args, QObject *parent);
     virtual ~ExecutableBase();
 
+    enum ExecutableStatus {
+        NotRunYet,
+        Running,
+        FinishedSuccessfully,
+        FinishedWithError,
+        Terminated,
+        Killed,
+        FailedToStart,
+        Crashed,
+        Timedout,
+        ReadError,
+        WriteError,
+        UnknownError
+    };
+
+    ExecutableStatus getStatus();
+
 signals:
     void started();
     void finished();
-    void terminated();
 
 public slots:
     void execute();
@@ -38,6 +54,7 @@ protected:
     QByteArray _stderr;
     QTextStream _stdinStream;
     QTextStream _stderrStream;
+    ExecutableStatus _status;
 
     virtual void setupSignals();
     virtual void parseOutput() =0;

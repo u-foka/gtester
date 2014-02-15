@@ -12,7 +12,17 @@ public:
     TestItemBase(TestItemBase *parent, TestModel *model);
     virtual ~TestItemBase();
 
-    TestItemBase *getChild(int getRow);
+    enum TestStates {
+        StateNone = 0,
+        StatePass,
+        StateFail,
+        StatePartialPass
+    };
+
+    static const QList<QString> TestStateNames;
+    static const QList<QVariant> TestStateColors;
+
+    TestItemBase *getChild(int getRow) const;
     int childCount() const;
     int columnCount() const;
     int getRow() const;
@@ -27,6 +37,8 @@ public:
     TestItemBase *getParent() const;
     TestModel *getModel() const;
 
+    virtual TestStates getTestState() const;
+
     void deleteChildren();
 
 protected:
@@ -35,18 +47,6 @@ protected:
         ColumnState,
         ColumnLast
     };
-
-    enum TestStates {
-        StateNone = 0,
-        StatePass,
-        StateFail,
-        StatePartialPass
-    };
-
-    static const QList<QString> TestStateNames;
-    static const QList<QVariant> TestStateColors;
-
-    virtual TestStates getTestState() const;
 
 private:
     QList<TestItemBase*> _childItems;

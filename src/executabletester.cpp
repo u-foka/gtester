@@ -6,6 +6,7 @@
 #include "testitemexecutable.h"
 #include "testitemcase.h"
 #include "testitem.h"
+#include "testmodel.h"
 
 ExecutableTester::ExecutableTester(TestItemExecutable *parentNode, QObject *parent) :
     ExecutableBase(parentNode->getFileInfo(), QStringList() << "--gtest_list_tests", parent), _parentNode(parentNode)
@@ -18,6 +19,12 @@ ExecutableTester::~ExecutableTester()
 
 void ExecutableTester::parseOutput()
 {
+    if (getStatus() != FinishedSuccessfully) {
+        _parentNode->getModel()->removeExecutable(_parentNode);
+        _parentNode = 0;
+        return;
+    }
+
     const QRegExp testCaseMatch("^([\\w_]+)\\.$");
     const QRegExp testNameMatch("^\\s+([\\w_]+)$");
 

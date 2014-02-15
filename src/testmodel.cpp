@@ -144,6 +144,11 @@ int TestModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
+bool TestModel::isRunning()
+{
+    return _running;
+}
+
 TestItemRoot * TestModel::rootItem()
 {
     return _rootItem;
@@ -156,7 +161,15 @@ void TestModel::execute()
 
 void TestModel::terminate()
 {
+    if (_pendingJobs.count() > 0) {
+        _pendingJobs.at(0)->terminate();
 
+        for (int i = _pendingJobs.count() -1; i > 0; i--) // Don't delete the first item here
+        {
+            delete _pendingJobs.at(i);
+            _pendingJobs.removeAt(i);
+        }
+    }
 }
 
 void TestModel::addExecutable(QString fileName)
@@ -250,38 +263,37 @@ void TestModel::refresh(TestItemExecutable *item)
 
 void TestModel::jobExecuted()
 {
-    emit execute();
-    emit executionStateChanged(true);
+    if (! _running) {
+        _running = true;
+        emit execute();
+        emit executionStateChanged(_running);
+    }
 }
 
 void TestModel::jobFinished()
 {
-    emit executionStateChanged(false);
-    emit finished();
-
-    delete _pendingJobs.first();
+    ExecutableBase *currentJob = _pendingJobs.first();
     _pendingJobs.pop_front();
-    if (_pendingJobs.count() > 0)
-        _pendingJobs[0]->execute();
-}
+    delete currentJob; // Delete here to prevent memory leak if for example any handler of finished crashes
 
-void TestModel::jobTerminated()
-{
-    emit executionStateChanged(false);
-    emit terminated("Unknown error");
+    if (_pendingJobs.count() > 0) {
+        _pendingJobs[0]->execute();
+    } else {
+        _running = false;
+        emit executionStateChanged(_running);
+        emit finished();
+    }
 }
 
 void TestModel::queueJob(ExecutableBase *job)
 {
     connect(job, SIGNAL(started()), this, SLOT(jobExecuted()));
     connect(job, SIGNAL(finished()), this, SLOT(jobFinished()));
-    connect(job, SIGNAL(terminated()), this, SLOT(jobTerminated()));
 
     _pendingJobs.append(job);
 
     if (_pendingJobs.count() == 1)
         job->execute();
-
 }
 
 void TestModel::updateParents(const QModelIndex &index, QVector<int> roles)

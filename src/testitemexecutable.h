@@ -16,9 +16,11 @@ public:
     virtual QVariant getData(int column) const;
 
     const QFileInfo & getFileInfo() const;
+    const QStringList & getTestArguments() const;
 
 private:
     QFileInfo _file;
+    mutable QStringList _args;
 
 };
 

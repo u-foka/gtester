@@ -30,6 +30,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+    bool isRunning();
     TestItemRoot *rootItem();
 
 signals:
@@ -52,10 +53,10 @@ public slots:
 private slots:
     void jobExecuted();
     void jobFinished();
-    void jobTerminated();
 
 private:
     TestItemRoot *_rootItem;
+    bool _running;
     QList<ExecutableBase*> _pendingJobs;
 
     void queueJob(ExecutableBase *job);

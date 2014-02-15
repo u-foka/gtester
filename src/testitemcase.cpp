@@ -22,3 +22,8 @@ QVariant TestItemCase::getData(int column) const
         return QVariant();
     }
 }
+
+const QString & TestItemCase::getName() const
+{
+    return _name;
+}

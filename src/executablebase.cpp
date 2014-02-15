@@ -4,13 +4,18 @@
 
 ExecutableBase::ExecutableBase(const QFileInfo &file, const QStringList &args, QObject *parent) :
     QObject(parent), _proc(this), _file(file), _args(args), _stdin(), _stderr(),
-    _stdinStream(&_stdin), _stderrStream(&_stderr)
+    _stdinStream(&_stdin), _stderrStream(&_stderr), _status(NotRunYet)
 {
     setupSignals();
 }
 
 ExecutableBase::~ExecutableBase()
 {
+}
+
+ExecutableBase::ExecutableStatus ExecutableBase::getStatus()
+{
+    return _status;
 }
 
 void ExecutableBase::execute()
@@ -24,27 +29,64 @@ void ExecutableBase::execute()
 
 void ExecutableBase::terminate()
 {
+    _status = Terminated;
     _proc.terminate();
 }
 
 void ExecutableBase::kill()
 {
+    _status = Killed;
     _proc.kill();
 }
 
-void ExecutableBase::procError(QProcess::ProcessError)
+void ExecutableBase::procError(QProcess::ProcessError error)
 {
-    emit terminated();
+    if (_status == Terminated || _status == Killed)
+        return;
+
+    bool emitFinished = _status != Running;
+
+    switch (error) {
+    case QProcess::FailedToStart:
+        _status = FailedToStart;
+        break;
+
+    case QProcess::Crashed:
+        _status = Crashed;
+        break;
+
+    case QProcess::Timedout:
+        _status = Timedout;
+        break;
+
+    case QProcess::ReadError:
+        _status = ReadError;
+        break;
+
+    case QProcess::WriteError:
+        _status = WriteError;
+        break;
+
+    default:
+        _status = UnknownError;
+    }
+
+    if (emitFinished)
+        emit finished();
 }
 
 void ExecutableBase::procFinished(int, QProcess::ExitStatus exitStatus)
 {
+    if (_status == Running) {
+        if (exitStatus == QProcess::NormalExit)
+            _status = FinishedSuccessfully;
+        else
+            _status = FinishedWithError;
+    }
+
     parseOutput();
 
-    if (exitStatus == QProcess::NormalExit)
-        emit finished();
-    else
-        emit terminated();
+    emit finished();
 }
 
 void ExecutableBase::procReadyReadStandardError()
@@ -59,6 +101,7 @@ void ExecutableBase::procReadyReadStandardOutput()
 
 void ExecutableBase::procStarted()
 {
+    _status = Running;
     emit started();
 }
 

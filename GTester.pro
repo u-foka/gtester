@@ -16,7 +16,8 @@ SOURCES += src/main.cpp\
     src/testitemexecutable.cpp \
     src/testitemcase.cpp \
     src/testitem.cpp \
-    src/testitemroot.cpp
+    src/testitemroot.cpp \
+    src/executabletestrunner.cpp
 
 HEADERS  += src/mainwindow.h \
     src/executablebase.h \
@@ -26,7 +27,8 @@ HEADERS  += src/mainwindow.h \
     src/testitemexecutable.h \
     src/testitemcase.h \
     src/testitem.h \
-    src/testitemroot.h
+    src/testitemroot.h \
+    src/executabletestrunner.h
 
 FORMS    += ui/mainwindow.ui
 

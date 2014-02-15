@@ -13,6 +13,8 @@ public:
 
     virtual QVariant getData(int column) const;
 
+    const QString & getName() const;
+
 private:
     QString _name;
 };

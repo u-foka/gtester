@@ -16,8 +16,11 @@ public:
 
     virtual QVariant getData(int column) const;
 
-protected:
     virtual TestStates getTestState() const;
+    void setTestState(TestStates state);
+
+    const QString & getName() const;
+    bool getEnabled() const;
 
 private:
     QString _name;
