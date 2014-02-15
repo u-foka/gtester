@@ -1,7 +1,5 @@
 #include "executabletestrunner.h"
 
-#include <QDebug>
-
 #include "testitemexecutable.h"
 #include "testitem.h"
 
@@ -22,9 +20,6 @@ void ExecutableTestRunner::parseOutput()
     const QRegExp testRun("^\\[\\s*RUN\\s*\\]\\s+(.+)$");
     const QRegExp testPass("^\\[\\s*OK\\s*\\]\\s+(.+) \\((\\d+) ms\\)$");
     const QRegExp testFail("^\\[\\s*FAILED\\s*\\]\\s+(.+) \\((\\d+) ms\\)$");
-
-    qDebug() << "Executable output:";
-    qDebug() << QString(_stdin);
 
     QString line;
     QString test;

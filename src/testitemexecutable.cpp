@@ -1,7 +1,5 @@
 #include "testitemexecutable.h"
 
-#include <QDebug>
-
 #include "testitemroot.h"
 #include "testitemcase.h"
 #include "testitem.h"

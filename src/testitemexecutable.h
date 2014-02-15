@@ -4,6 +4,7 @@
 #include "testitembase.h"
 
 #include <QFileInfo>
+#include <QStringList>
 
 class TestItemRoot;
 class TestItem;
