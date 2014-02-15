@@ -72,3 +72,13 @@ bool TestItem::getEnabled() const
 {
     return _enabled;
 }
+
+const QString & TestItem::getOutput() const
+{
+    return _output;
+}
+
+void TestItem::setOutput(const QString &output)
+{
+    _output = output;
+}

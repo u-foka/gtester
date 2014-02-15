@@ -5,6 +5,7 @@
 #include <QFileDialog>
 
 #include "testitemexecutable.h"
+#include "testitem.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -137,4 +138,14 @@ void MainWindow::on_testsTree_selectionChanged(QItemSelection newSel, QItemSelec
 
     _ui->actionRemove_test_executable->setEnabled(enabled);
     _ui->actionRefresh_tests->setEnabled(enabled);
+
+    if (newSel.count() > 0) {
+        TestItemBase *base = static_cast<TestItemBase*>(newSel.first().indexes().first().internalPointer());
+        TestItem *item = dynamic_cast<TestItem*>(base);
+
+        if (item == 0)
+            _ui->outputEdit->setText(QString());
+        else
+            _ui->outputEdit->setText(item->getOutput());
+    }
 }

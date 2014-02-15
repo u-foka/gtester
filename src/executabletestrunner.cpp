@@ -50,6 +50,7 @@ void ExecutableTestRunner::parseOutput()
             }
 
             item->setTestState(TestItemBase::StatePass);
+            item->setOutput(testOutput.join('\n'));
 
         } else if (testFail.exactMatch(line)) {
 
@@ -59,6 +60,7 @@ void ExecutableTestRunner::parseOutput()
             }
 
             item->setTestState(TestItemBase::StateFail);
+            item->setOutput(testOutput.join('\n'));
 
         } else {
 

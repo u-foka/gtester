@@ -22,10 +22,14 @@ public:
     const QString & getName() const;
     bool getEnabled() const;
 
+    const QString & getOutput() const;
+    void setOutput(const QString &output);
+
 private:
     QString _name;
     bool _enabled;
     TestStates _state;
+    QString _output;
 };
 
 #endif // TESTITEM_H
