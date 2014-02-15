@@ -127,9 +127,12 @@ TestItemBase::TestStates TestItemBase::getTestState() const
         } else if (it == _childItems.begin()) {
             // Inicialize enabled with the first item
             state = (*it)->getTestState();
+        } else if (state == StatePartialPass) {
+            // Nothing to do here, but not returning since we need to iterate trough the whole
+            // tree to see if there are any failed tests
         } else if (state != (*it)->getTestState()) {
-            // Already have both StatePass and StateNone children, returning immediatelly
-            return StatePartialPass;
+            // Already have both StatePass and StateNone children, setting state to Partial
+            state = StatePartialPass;
         }
     }
 
