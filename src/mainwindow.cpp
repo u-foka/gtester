@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&_model, SIGNAL(executionStateChanged(bool)), this, SLOT(setRunning(bool)));
     connect(_ui->actionRun_selected, SIGNAL(triggered()), &_model, SLOT(execute()));
     connect(_ui->actionTerminate, SIGNAL(triggered()), &_model, SLOT(terminate()));
+    connect(_ui->actionShuffle_tests, SIGNAL(toggled(bool)), &_model, SLOT(setShuffle(bool)));
+
+    _model.setShuffle(_ui->actionShuffle_tests->isChecked());
 
     // Restore geometry
     restoreGeometry(_settings.value(SETTINGS_WINDOW_GEOMETRY).toByteArray());

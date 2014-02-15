@@ -93,6 +93,8 @@
     <addaction name="actionRefresh_tests"/>
     <addaction name="actionRun_selected"/>
     <addaction name="actionTerminate"/>
+    <addaction name="separator"/>
+    <addaction name="actionShuffle_tests"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -282,6 +284,17 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionShuffle_tests">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Shuffle tests</string>
    </property>
   </action>
  </widget>

@@ -162,7 +162,7 @@ void TestModel::execute()
         if (exec == 0)
             continue;
 
-        queueJob(new ExecutableTestRunner(exec, this));
+        queueJob(new ExecutableTestRunner(exec, _shuffle, this));
     }
 }
 
@@ -266,6 +266,11 @@ void TestModel::refresh(TestItemExecutable *item)
     endRemoveRows();
 
     queueJob(new ExecutableTester(item, this));
+}
+
+void TestModel::setShuffle(bool shuffle)
+{
+    _shuffle = shuffle;
 }
 
 void TestModel::jobExecuted()

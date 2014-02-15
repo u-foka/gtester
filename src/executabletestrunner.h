@@ -9,7 +9,7 @@ class ExecutableTestRunner : public ExecutableBase
 {
     Q_OBJECT
 public:
-    explicit ExecutableTestRunner(TestItemExecutable *parentNode, QObject *parent = 0);
+    explicit ExecutableTestRunner(TestItemExecutable *parentNode, bool shuffle, QObject *parent = 0);
     virtual ~ExecutableTestRunner();
 
 signals:

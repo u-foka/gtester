@@ -5,10 +5,12 @@
 #include "testitemexecutable.h"
 #include "testitem.h"
 
-ExecutableTestRunner::ExecutableTestRunner(TestItemExecutable *parentNode, QObject *parent) :
+ExecutableTestRunner::ExecutableTestRunner(TestItemExecutable *parentNode, bool shuffle, QObject *parent) :
     ExecutableBase(parentNode->getFileInfo(), parentNode->getTestArguments(), parent), _parentNode(parentNode)
 {
     _args.append("--gtest_color=no");
+    if (shuffle)
+        _args.append("--gtest_shuffle");
 }
 
 ExecutableTestRunner::~ExecutableTestRunner()
