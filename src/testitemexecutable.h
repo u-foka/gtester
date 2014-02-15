@@ -6,6 +6,7 @@
 #include <QFileInfo>
 
 class TestItemRoot;
+class TestItem;
 
 class TestItemExecutable : public TestItemBase
 {
@@ -17,6 +18,9 @@ public:
 
     const QFileInfo & getFileInfo() const;
     const QStringList & getTestArguments() const;
+
+    TestItem *getTestItem(const QString &name) const;
+    TestItem *getTestItem(const QString &caseName, const QString &testName) const;
 
 private:
     QFileInfo _file;

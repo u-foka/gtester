@@ -17,6 +17,8 @@ signals:
 public slots:
 
 protected:
+    TestItemExecutable *_parentNode;
+
     virtual void parseOutput();
 
 };

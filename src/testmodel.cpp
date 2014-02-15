@@ -6,6 +6,7 @@
 #include "testitemexecutable.h"
 #include "executablebase.h"
 #include "executabletester.h"
+#include "executabletestrunner.h"
 
 TestModel::TestModel(QObject *parent)
     : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this))
@@ -156,7 +157,13 @@ TestItemRoot * TestModel::rootItem()
 
 void TestModel::execute()
 {
+    for (int i = 0; i < _rootItem->childCount(); i++) {
+        TestItemExecutable * exec = dynamic_cast<TestItemExecutable*>(_rootItem->getChild(i));
+        if (exec == 0)
+            continue;
 
+        queueJob(new ExecutableTestRunner(exec, this));
+    }
 }
 
 void TestModel::terminate()
@@ -265,7 +272,7 @@ void TestModel::jobExecuted()
 {
     if (! _running) {
         _running = true;
-        emit execute();
+        emit started();
         emit executionStateChanged(_running);
     }
 }
