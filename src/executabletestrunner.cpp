@@ -23,46 +23,43 @@ void ExecutableTestRunner::parseOutput()
     const QRegExp testFail("^\\[\\s*FAILED\\s*\\]\\s+(.+) \\((\\d+) ms\\)$");
 
     QString line;
-    QString test;
-    TestItem *item;
-    QStringList testOutput;
     while ((line = _stdinStream.readLine()).isNull() == false) {
 
         if (testRun.exactMatch(line)) {
 
-            testOutput.clear();
-            test = testRun.capturedTexts().at(1);
-            item = _parentNode->getTestItem(test);
-            if (item == 0) {
+            _testOutput.clear();
+            _currentTest = testRun.capturedTexts().at(1);
+            _currentItem = _parentNode->getTestItem(_currentTest);
+            if (_currentItem == 0) {
                 _status = UnknownError;
                 return;
             }
 
-            _parentNode->getModel()->updateRunningTest(test);
+            _parentNode->getModel()->updateRunningTest(_currentTest);
 
         } else if (testPass.exactMatch(line)) {
 
-            if (test != testPass.capturedTexts().at(1)) {
+            if (_currentTest != testPass.capturedTexts().at(1)) {
                 _status = UnknownError;
                 return;
             }
 
-            item->setTestState(TestItemBase::StatePass);
-            item->setOutput(testOutput.join('\n'));
+            _currentItem->setTestState(TestItemBase::StatePass);
+            _currentItem->setOutput(_testOutput.join('\n'));
 
         } else if (testFail.exactMatch(line)) {
 
-            if (test != testFail.capturedTexts().at(1)) {
+            if (_currentTest != testFail.capturedTexts().at(1)) {
                 _status = UnknownError;
                 return;
             }
 
-            item->setTestState(TestItemBase::StateFail);
-            item->setOutput(testOutput.join('\n'));
+            _currentItem->setTestState(TestItemBase::StateFail);
+            _currentItem->setOutput(_testOutput.join('\n'));
 
         } else {
 
-            testOutput.push_back(line);
+            _testOutput.push_back(line);
 
         }
 

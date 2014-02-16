@@ -19,6 +19,9 @@ ExecutableTester::~ExecutableTester()
 
 void ExecutableTester::parseOutput()
 {
+    if (getStatus() == Running)
+        return;
+
     if (getStatus() != FinishedSuccessfully) {
         _parentNode->getModel()->removeExecutable(_parentNode);
         _parentNode = 0;

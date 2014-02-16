@@ -4,6 +4,7 @@
 #include "executablebase.h"
 
 class TestItemExecutable;
+class TestItem;
 
 class ExecutableTestRunner : public ExecutableBase
 {
@@ -18,6 +19,10 @@ public slots:
 
 protected:
     TestItemExecutable *_parentNode;
+
+    QString _currentTest;
+    TestItem *_currentItem;
+    QStringList _testOutput;
 
     virtual void parseOutput();
 

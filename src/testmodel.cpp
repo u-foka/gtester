@@ -351,7 +351,7 @@ void TestModel::updateRunningTest(const QString &test)
 {
     if (_runningTestCount > 0) {
         _completedTestCount++;
-        emit progressUpdated(round(_completedTestCount / _runningTestCount * 100));
+        emit progressUpdated(round(double(_completedTestCount) / _runningTestCount * 100));
     }
 
     emit testStarted(test);

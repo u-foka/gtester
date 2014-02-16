@@ -92,11 +92,17 @@ void ExecutableBase::procFinished(int, QProcess::ExitStatus exitStatus)
 void ExecutableBase::procReadyReadStandardError()
 {
     _stderr.append(_proc.readAllStandardError());
+
+    // TODO: Only parse if the buffer ends with a line break
+    parseOutput();
 }
 
 void ExecutableBase::procReadyReadStandardOutput()
 {
     _stdin.append(_proc.readAllStandardOutput());
+
+    // TODO: Only parse if the buffer ends with a line break
+    parseOutput();
 }
 
 void ExecutableBase::procStarted()
