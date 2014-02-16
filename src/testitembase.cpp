@@ -148,6 +148,15 @@ void TestItemBase::deleteChildren()
         delete *--it;
 }
 
+int TestItemBase::getEnabledChildCount()
+{
+    int count = 0;
+    for (QList<TestItemBase*>::Iterator i = _childItems.begin(); i != _childItems.end(); i++)
+        count += (*i)->getEnabledChildCount();
+
+    return count;
+}
+
 void TestItemBase::appendChild(TestItemBase *item)
 {
     if (_childItems.indexOf(item) >= 0) {

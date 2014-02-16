@@ -19,18 +19,17 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
 
-    bool getRunning() const;
-
-public slots:
-    void setRunning(bool getRunning);
-
 private slots:
     void on_actionRun_selected_triggered();
     void on_actionAdd_test_executable_triggered();
     void on_actionRefresh_tests_triggered();
     void on_actionRemove_test_executable_triggered();
 
-    void on_testsTree_selectionChanged(QItemSelection newSel, QItemSelection oldSel);
+    void testsTree_selectionChanged(QItemSelection newSel, QItemSelection oldSel);
+
+    void model_executionStateChanged(bool getRunning);
+    void model_progressUpdated(int percent);
+    void model_testStarted(const QString &status);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -39,8 +38,6 @@ private:
     Ui::MainWindow *_ui;
     QSettings _settings;
     TestModel _model;
-
-    bool _running;
 
 };
 

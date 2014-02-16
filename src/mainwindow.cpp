@@ -17,28 +17,32 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
     _settings(),
-    _model(), // Don't give it the window as parent since the destructor will destroy it anyway
-    _running(false)
+    _model() // Don't give it the window as parent since the destructor will destroy it anyway
 {
     _ui->setupUi(this);
     _ui->testsTree->setModel(&_model);
     _ui->testsTree->setSelectionMode(QTreeView::SingleSelection);
     _ui->testsTree->setSelectionBehavior(QTreeView::SelectRows);
     _ui->testsTree->header()->resizeSection(0, 250);
+    _ui->testsTree->header()->setStretchLastSection(false);
+    _ui->testsTree->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 
     // Setup splitter
     _ui->splitter->setStretchFactor(0, 1);
     _ui->splitter->setStretchFactor(1, 0);
 
     connect(_ui->testsTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(on_testsTree_selectionChanged(QItemSelection,QItemSelection)));
+            this, SLOT(testsTree_selectionChanged(QItemSelection,QItemSelection)));
 
-    connect(&_model, SIGNAL(executionStateChanged(bool)), this, SLOT(setRunning(bool)));
     connect(_ui->actionRun_selected, SIGNAL(triggered()), &_model, SLOT(execute()));
     connect(_ui->actionTerminate, SIGNAL(triggered()), &_model, SLOT(terminate()));
     connect(_ui->actionShuffle_tests, SIGNAL(toggled(bool)), &_model, SLOT(setShuffle(bool)));
 
     _model.setShuffle(_ui->actionShuffle_tests->isChecked());
+
+    connect(&_model, SIGNAL(executionStateChanged(bool)), this, SLOT(model_executionStateChanged(bool)));
+    connect(&_model, SIGNAL(progressUpdated(int)), this, SLOT(model_progressUpdated(int)));
+    connect(&_model, SIGNAL(testStarted(QString)), this, SLOT(model_testStarted(QString)));
 
     // Restore geometry
     restoreGeometry(_settings.value(SETTINGS_WINDOW_GEOMETRY).toByteArray());
@@ -54,31 +58,28 @@ MainWindow::~MainWindow()
     delete _ui;
 }
 
-bool MainWindow::getRunning() const
+void MainWindow::model_executionStateChanged(bool running)
 {
-    return _running;
-}
-
-void MainWindow::setRunning(bool running)
-{
-    _running = running;
     bool hasSelection = _ui->testsTree->selectionModel()->selectedIndexes().count() > 0;
 
-    _ui->actionNew->setEnabled(!_running);
-    _ui->actionOpen->setEnabled(!_running);
-    _ui->actionSave->setEnabled(!_running);
-    _ui->actionSave_As->setEnabled(!_running);
-    _ui->actionQuit->setEnabled(!_running);
+    _ui->actionNew->setEnabled(!running);
+    _ui->actionOpen->setEnabled(!running);
+    _ui->actionSave->setEnabled(!running);
+    _ui->actionSave_As->setEnabled(!running);
+    _ui->actionQuit->setEnabled(!running);
 
-    _ui->actionAdd_test_executable->setEnabled(!_running);
-    _ui->actionRemove_test_executable->setEnabled(!_running && hasSelection);
-    _ui->actionRun_selected->setEnabled(!_running);
-    _ui->actionRefresh_tests->setEnabled(!_running && hasSelection);
-    _ui->actionTerminate->setEnabled(_running);
+    _ui->actionAdd_test_executable->setEnabled(!running);
+    _ui->actionRemove_test_executable->setEnabled(!running && hasSelection);
+    _ui->actionRun_selected->setEnabled(!running);
+    _ui->actionRefresh_tests->setEnabled(!running && hasSelection);
+    _ui->actionTerminate->setEnabled(running);
+
+    if (!running)
+        _ui->statusBar->clearMessage();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if (_running) {
+    if (_model.isRunning()) {
         event->ignore();
         return;
     }
@@ -94,13 +95,13 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::on_actionRun_selected_triggered()
 {
-    if (_running)
+    if (_model.isRunning())
         return;
 }
 
 void MainWindow::on_actionAdd_test_executable_triggered()
 {
-    if (_running)
+    if (_model.isRunning())
         return;
 
     QString fileName = QFileDialog::getOpenFileName(this, "Open test executable");
@@ -112,7 +113,7 @@ void MainWindow::on_actionAdd_test_executable_triggered()
 
 void MainWindow::on_actionRefresh_tests_triggered()
 {
-    if (_running)
+    if (_model.isRunning())
         return;
 
     QModelIndexList sel = _ui->testsTree->selectionModel()->selectedIndexes();
@@ -123,7 +124,7 @@ void MainWindow::on_actionRefresh_tests_triggered()
 
 void MainWindow::on_actionRemove_test_executable_triggered()
 {
-    if (_running)
+    if (_model.isRunning())
         return;
 
     QModelIndexList sel = _ui->testsTree->selectionModel()->selectedIndexes();
@@ -132,9 +133,9 @@ void MainWindow::on_actionRemove_test_executable_triggered()
     }
 }
 
-void MainWindow::on_testsTree_selectionChanged(QItemSelection newSel, QItemSelection /*oldSel*/)
+void MainWindow::testsTree_selectionChanged(QItemSelection newSel, QItemSelection /*oldSel*/)
 {
-    bool enabled = newSel.count() > 0 && !_running;
+    bool enabled = newSel.count() > 0 && !_model.isRunning();
 
     _ui->actionRemove_test_executable->setEnabled(enabled);
     _ui->actionRefresh_tests->setEnabled(enabled);
@@ -148,4 +149,14 @@ void MainWindow::on_testsTree_selectionChanged(QItemSelection newSel, QItemSelec
         else
             _ui->outputEdit->setText(item->getOutput());
     }
+}
+
+void MainWindow::model_progressUpdated(int percent)
+{
+    _ui->progressBar->setValue(percent);
+}
+
+void MainWindow::model_testStarted(const QString &status)
+{
+    _ui->statusBar->showMessage("Running test: " + status);
 }

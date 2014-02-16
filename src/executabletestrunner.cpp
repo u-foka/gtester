@@ -2,6 +2,7 @@
 
 #include "testitemexecutable.h"
 #include "testitem.h"
+#include "testmodel.h"
 
 ExecutableTestRunner::ExecutableTestRunner(TestItemExecutable *parentNode, bool shuffle, QObject *parent) :
     ExecutableBase(parentNode->getFileInfo(), parentNode->getTestArguments(), parent), _parentNode(parentNode)
@@ -36,6 +37,8 @@ void ExecutableTestRunner::parseOutput()
                 _status = UnknownError;
                 return;
             }
+
+            _parentNode->getModel()->updateRunningTest(test);
 
         } else if (testPass.exactMatch(line)) {
 

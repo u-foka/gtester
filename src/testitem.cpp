@@ -82,3 +82,8 @@ void TestItem::setOutput(const QString &output)
 {
     _output = output;
 }
+
+int TestItem::getEnabledChildCount()
+{
+    return _enabled ? 1 : 0;
+}

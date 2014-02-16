@@ -1,6 +1,7 @@
 #include "testmodel.h"
 
 #include <QtGui>
+#include <math.h>
 
 #include "testitemroot.h"
 #include "testitemexecutable.h"
@@ -9,7 +10,8 @@
 #include "executabletestrunner.h"
 
 TestModel::TestModel(QObject *parent)
-    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this))
+    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this)), _shuffle(false), _running(false),
+      _pendingJobs(), _runningTestCount(0), _completedTestCount(0)
 {
 }
 
@@ -157,9 +159,15 @@ TestItemRoot * TestModel::rootItem()
 
 void TestModel::execute()
 {
+    _runningTestCount = _rootItem->getEnabledChildCount();
+    _completedTestCount = 0;
+
     for (int i = 0; i < _rootItem->childCount(); i++) {
         TestItemExecutable * exec = dynamic_cast<TestItemExecutable*>(_rootItem->getChild(i));
         if (exec == 0)
+            continue;
+
+        if (exec->getCheckState(0) == Qt::Unchecked)
             continue;
 
         queueJob(new ExecutableTestRunner(exec, _shuffle, this));
@@ -292,6 +300,8 @@ void TestModel::jobFinished()
         _pendingJobs[0]->execute();
     } else {
         _running = false;
+        _runningTestCount = 0;
+        _completedTestCount = 0;
         emit executionStateChanged(_running);
         emit finished();
     }
@@ -332,3 +342,17 @@ void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
     }
 }
 
+void TestModel::updateProgress(int percent)
+{
+    emit progressUpdated(percent);
+}
+
+void TestModel::updateRunningTest(const QString &test)
+{
+    if (_runningTestCount > 0) {
+        _completedTestCount++;
+        emit progressUpdated(round(_completedTestCount / _runningTestCount * 100));
+    }
+
+    emit testStarted(test);
+}
