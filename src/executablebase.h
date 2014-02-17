@@ -15,6 +15,7 @@ public:
 
     enum ExecutableStatus {
         NotRunYet,
+        Executing,
         Running,
         FinishedSuccessfully,
         FinishedWithError,

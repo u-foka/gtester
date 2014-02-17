@@ -1,5 +1,7 @@
 #include "executabletestrunner.h"
 
+#include <stdexcept>
+
 #include "testitemexecutable.h"
 #include "testitem.h"
 #include "testmodel.h"
@@ -7,6 +9,9 @@
 ExecutableTestRunner::ExecutableTestRunner(TestItemExecutable *parentNode, bool shuffle, QObject *parent) :
     ExecutableBase(parentNode->getFileInfo(), parentNode->getTestArguments(), parent), _parentNode(parentNode)
 {
+    if (parentNode == 0)
+        throw std::runtime_error("Cannot create ExecutableTestRunner without a parent node");
+
     _args.append("--gtest_color=no");
     if (shuffle)
         _args.append("--gtest_shuffle");

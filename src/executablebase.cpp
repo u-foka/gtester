@@ -24,6 +24,8 @@ void ExecutableBase::execute()
         throw std::runtime_error("Unable to run file");
     }
 
+    _status = Executing;
+
     _proc.start(_file.absoluteFilePath(), _args);
 }
 
@@ -94,7 +96,8 @@ void ExecutableBase::procReadyReadStandardError()
     _stderr.append(_proc.readAllStandardError());
 
     // TODO: Only parse if the buffer ends with a line break
-    parseOutput();
+    if (_status == Running)
+        parseOutput();
 }
 
 void ExecutableBase::procReadyReadStandardOutput()
@@ -102,7 +105,8 @@ void ExecutableBase::procReadyReadStandardOutput()
     _stdin.append(_proc.readAllStandardOutput());
 
     // TODO: Only parse if the buffer ends with a line break
-    parseOutput();
+    if (_status == Running)
+        parseOutput();
 }
 
 void ExecutableBase::procStarted()

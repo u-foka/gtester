@@ -11,6 +11,8 @@
 ExecutableTester::ExecutableTester(TestItemExecutable *parentNode, QObject *parent) :
     ExecutableBase(parentNode->getFileInfo(), QStringList() << "--gtest_list_tests", parent), _parentNode(parentNode)
 {
+    if (parentNode == 0)
+        throw std::runtime_error("Cannot create ExecutableTester without a parent node");
 }
 
 ExecutableTester::~ExecutableTester()
