@@ -1,7 +1,6 @@
 #include "testmodel.h"
 
 #include <QtGui>
-#include <math.h>
 
 #include "testitemroot.h"
 #include "testitemexecutable.h"
@@ -159,7 +158,7 @@ TestItemRoot * TestModel::rootItem()
 
 void TestModel::execute()
 {
-    _runningTestCount = _rootItem->getEnabledChildCount();
+    _runningTestCount = _rootItem->prepareTestExecution();
     _completedTestCount = 0;
 
     for (int i = 0; i < _rootItem->childCount(); i++) {
@@ -351,7 +350,7 @@ void TestModel::updateRunningTest(const QString &test)
 {
     if (_runningTestCount > 0) {
         _completedTestCount++;
-        emit progressUpdated(round(double(_completedTestCount) / _runningTestCount * 100));
+        emit progressUpdated(static_cast<int>(double(_completedTestCount) / _runningTestCount * 100 + 0.5));
     }
 
     emit testStarted(test);

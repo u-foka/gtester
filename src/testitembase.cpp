@@ -7,14 +7,14 @@
 #include "testmodel.h"
 
 const QList<QString> TestItemBase::TestStateNames(QList<QString>() <<
-        "Not yet run" <<
+        "" <<
         "Passed" <<
         "Failed" <<
         "Partially passed"
         );
 
 const QList<QVariant> TestItemBase::TestStateColors(QList<QVariant>() <<
-        QColor(Qt::lightGray) <<
+        QVariant() <<
         QColor(Qt::green) <<
         QColor(Qt::red) <<
         QColor(Qt::yellow)
@@ -148,11 +148,11 @@ void TestItemBase::deleteChildren()
         delete *--it;
 }
 
-int TestItemBase::getEnabledChildCount()
+int TestItemBase::prepareTestExecution()
 {
     int count = 0;
     for (QList<TestItemBase*>::Iterator i = _childItems.begin(); i != _childItems.end(); i++)
-        count += (*i)->getEnabledChildCount();
+        count += (*i)->prepareTestExecution();
 
     return count;
 }

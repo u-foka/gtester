@@ -83,7 +83,8 @@ void TestItem::setOutput(const QString &output)
     _output = output;
 }
 
-int TestItem::getEnabledChildCount()
+int TestItem::prepareTestExecution()
 {
+    setTestState(StateNone);
     return _enabled ? 1 : 0;
 }

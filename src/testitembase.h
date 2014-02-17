@@ -40,7 +40,7 @@ public:
     virtual TestStates getTestState() const;
 
     void deleteChildren();
-    virtual int getEnabledChildCount();
+    virtual int prepareTestExecution();
 
 protected:
     enum ColumnNames {

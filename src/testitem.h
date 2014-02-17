@@ -25,7 +25,7 @@ public:
     const QString & getOutput() const;
     void setOutput(const QString &output);
 
-    virtual int getEnabledChildCount();
+    virtual int prepareTestExecution();
 
 private:
     QString _name;

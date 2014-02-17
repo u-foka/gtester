@@ -6,6 +6,7 @@ TARGET = GTester
 TEMPLATE = app
 
 ICON = resources/gtester.icns
+RC_FILE = resources/gtester.rc
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
