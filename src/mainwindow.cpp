@@ -74,8 +74,15 @@ void MainWindow::model_executionStateChanged(bool running)
     _ui->actionRefresh_tests->setEnabled(!running && hasSelection);
     _ui->actionTerminate->setEnabled(running);
 
-    if (!running)
+    if (!running) {
         _ui->statusBar->clearMessage();
+        if (hasSelection)
+            updateOutput(static_cast<TestItemBase*>(
+                             _ui->testsTree->selectionModel()->selectedIndexes().first().internalPointer()
+                         ));
+    } else {
+        _ui->outputEdit->setText(QString());
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -141,13 +148,7 @@ void MainWindow::testsTree_selectionChanged(QItemSelection newSel, QItemSelectio
     _ui->actionRefresh_tests->setEnabled(enabled);
 
     if (newSel.count() > 0) {
-        TestItemBase *base = static_cast<TestItemBase*>(newSel.first().indexes().first().internalPointer());
-        TestItem *item = dynamic_cast<TestItem*>(base);
-
-        if (item == 0)
-            _ui->outputEdit->setText(QString());
-        else
-            _ui->outputEdit->setText(item->getOutput());
+        updateOutput(static_cast<TestItemBase*>(newSel.first().indexes().first().internalPointer()));
     }
 }
 
@@ -159,4 +160,14 @@ void MainWindow::model_progressUpdated(int percent)
 void MainWindow::model_testStarted(const QString &status)
 {
     _ui->statusBar->showMessage("Running test: " + status);
+}
+
+void MainWindow::updateOutput(TestItemBase *base)
+{
+    TestItem *item = dynamic_cast<TestItem*>(base);
+
+    if (item == 0)
+        _ui->outputEdit->setText(QString());
+    else
+        _ui->outputEdit->setText(item->getOutput());
 }

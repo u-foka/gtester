@@ -31,6 +31,8 @@ private slots:
     void model_progressUpdated(int percent);
     void model_testStarted(const QString &status);
 
+    void updateOutput(TestItemBase *base);
+
 protected:
     void closeEvent(QCloseEvent *event);
 

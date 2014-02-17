@@ -86,5 +86,6 @@ void TestItem::setOutput(const QString &output)
 int TestItem::prepareTestExecution()
 {
     setTestState(StateNone);
+    _output.clear();
     return _enabled ? 1 : 0;
 }
