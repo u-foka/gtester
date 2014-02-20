@@ -3,9 +3,11 @@
 
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QFile>
 
 #include "testitemexecutable.h"
 #include "testitem.h"
+#include "fileformatv10.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -17,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
     _settings(),
-    _model() // Don't give it the window as parent since the destructor will destroy it anyway
+    _model(), // Don't give it the window as parent since the destructor will destroy it anyway
+    _actualFile()
 {
     _ui->setupUi(this);
     _ui->testsTree->setModel(&_model);
@@ -170,4 +173,67 @@ void MainWindow::updateOutput(TestItemBase *base)
         _ui->outputEdit->setText(QString());
     else
         _ui->outputEdit->setText(item->getOutput());
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (_model.isRunning())
+        return;
+
+    if (_actualFile.isEmpty()) {
+        on_actionSave_As_triggered();
+        return;
+    }
+
+    QFile file(_actualFile);
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+
+    FileFormatV10 to(file);
+
+    _model.save(&to);
+
+    file.close();
+}
+
+void MainWindow::on_actionSave_As_triggered()
+{
+    if (_model.isRunning())
+        return;
+
+    QString newFile = QFileDialog::getSaveFileName(this);
+
+    if (! newFile.isEmpty()) {
+        _actualFile = newFile;
+        on_actionSave_triggered();
+    }
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    if (_model.isRunning())
+        return;
+
+    QString newFile = QFileDialog::getOpenFileName(this, "Open GTester file");
+
+    if (newFile.isEmpty())
+        return;
+
+    _actualFile = newFile;
+
+    QFile file(_actualFile);
+    file.open(QIODevice::ReadOnly);
+
+    FileFormatV10 from(file);
+
+    _model.read(&from);
+
+    file.close();
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    if (_model.isRunning())
+        return;
+
+    _model.clear();
 }

@@ -5,6 +5,8 @@
 #include <QColor>
 
 #include "testmodel.h"
+#include "fileformatbase.h"
+
 
 const QList<QString> TestItemBase::TestStateNames(QList<QString>() <<
         "" <<

@@ -1,8 +1,19 @@
 #include "testitemexecutable.h"
 
+#include <stdexcept>
+
 #include "testitemroot.h"
 #include "testitemcase.h"
 #include "testitem.h"
+
+#include "fileformatbase.h"
+
+TestItemExecutable::TestItemExecutable(TestItemBase *parent) :
+    TestItemBase(parent, parent->getModel()), _file()
+{
+    if (dynamic_cast<TestItemRoot*>(getParent()) == 0)
+        throw std::runtime_error("Invalid parent");
+}
 
 TestItemExecutable::TestItemExecutable(QFileInfo file, TestItemRoot *parent) :
     TestItemBase(parent, parent->getModel()), _file(file)
@@ -28,6 +39,14 @@ QVariant TestItemExecutable::getData(int column) const
 const QFileInfo & TestItemExecutable::getFileInfo() const
 {
     return _file;
+}
+
+void TestItemExecutable::setFileInfo(const QFileInfo &file)
+{
+    if (! file.exists() || ! file.isExecutable())
+        throw std::runtime_error("The given test executable not found: " + file.filePath().toStdString());
+
+    _file = file;
 }
 
 const QStringList & TestItemExecutable::getTestArguments() const
@@ -96,4 +115,20 @@ TestItem * TestItemExecutable::getTestItem(const QString &caseName, const QStrin
     }
 
     return 0;
+}
+
+void TestItemExecutable::save(FileFormatBase *to)
+{
+    to->SaveItem(this);
+}
+
+void TestItemExecutable::saveChildren(FileFormatBase *to)
+{
+    for (QList<TestItemBase*>::Iterator i = _childItems.begin(); i != _childItems.end(); i++)
+        (*i)->save(to);
+}
+
+void TestItemExecutable::read(FileFormatBase *from)
+{
+    from->ReadItem(this);
 }

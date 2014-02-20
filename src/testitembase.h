@@ -5,6 +5,7 @@
 #include <QVariant>
 
 class TestModel;
+class FileFormatBase;
 
 class TestItemBase
 {
@@ -42,7 +43,14 @@ public:
     void deleteChildren();
     virtual int prepareTestExecution();
 
+    virtual void save(FileFormatBase *to) =0;
+    virtual void saveChildren(FileFormatBase *to) =0;
+
+    virtual void read(FileFormatBase *from) =0;
+
 protected:
+    QList<TestItemBase*> _childItems;
+
     enum ColumnNames {
         ColumnName = 0,
         ColumnState,
@@ -50,8 +58,6 @@ protected:
     };
 
 private:
-    QList<TestItemBase*> _childItems;
-
     TestItemBase *_parentItem;
     TestModel *_model;
 

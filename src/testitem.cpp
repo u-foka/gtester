@@ -1,10 +1,21 @@
 #include "testitem.h"
 
+#include <stdexcept>
+
 #include "testitemcase.h"
 #include "testmodel.h"
 
-TestItem::TestItem(QString name, TestItemCase *parent) :
-    TestItemBase(parent, parent->getModel()), _name(name), _enabled(true), _state(StateNone)
+#include "fileformatbase.h"
+
+TestItem::TestItem(TestItemBase *parent)
+    : TestItemBase(parent, parent->getModel()), _name(), _enabled(true), _state(StateNone)
+{
+    if (dynamic_cast<TestItemCase*>(getParent()) == 0)
+        throw std::runtime_error("Invalid parent");
+}
+
+TestItem::TestItem(QString name, TestItemCase *parent)
+    : TestItemBase(parent, parent->getModel()), _name(name), _enabled(true), _state(StateNone)
 {
     const QString disabled("DISABLED_");
 
@@ -68,9 +79,19 @@ const QString & TestItem::getName() const
     return _name;
 }
 
+void TestItem::setName(const QString &name)
+{
+    _name = name;
+}
+
 bool TestItem::getEnabled() const
 {
     return _enabled;
+}
+
+void TestItem::setEnabled(bool enabled)
+{
+    _enabled = enabled;
 }
 
 const QString & TestItem::getOutput() const
@@ -88,4 +109,18 @@ int TestItem::prepareTestExecution()
     setTestState(StateNone);
     _output.clear();
     return _enabled ? 1 : 0;
+}
+
+void TestItem::save(FileFormatBase *to)
+{
+    to->SaveItem(this);
+}
+
+void TestItem::saveChildren(FileFormatBase * /*to*/)
+{
+}
+
+void TestItem::read(FileFormatBase *from)
+{
+    from->ReadItem(this);
 }

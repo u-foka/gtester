@@ -9,6 +9,7 @@ class ExecutableBase;
 class TestItemBase;
 class TestItemRoot;
 class TestItemExecutable;
+class FileFormatBase;
 
 class TestModel : public QAbstractItemModel
 {
@@ -33,6 +34,9 @@ public:
     bool isRunning();
     TestItemRoot *rootItem();
 
+    void save(FileFormatBase *to);
+    void read(FileFormatBase *from);
+
 signals:
     void started();
     void finished();
@@ -51,6 +55,7 @@ public slots:
     void refresh(const QModelIndex &index = QModelIndex());
     void refresh(TestItemBase *item);
     void refresh(TestItemExecutable *item);
+    void clear();
     void setShuffle(bool shuffle);
 
 private slots:

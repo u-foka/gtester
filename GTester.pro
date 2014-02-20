@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core xml gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -8,8 +8,9 @@ TEMPLATE = app
 ICON = resources/gtester.icns
 RC_FILE = resources/gtester.rc
 
-SOURCES += src/main.cpp\
-        src/mainwindow.cpp \
+SOURCES += \
+    src/main.cpp\
+    src/mainwindow.cpp \
     src/executablebase.cpp \
     src/executabletester.cpp \
     src/testmodel.cpp \
@@ -18,9 +19,13 @@ SOURCES += src/main.cpp\
     src/testitemcase.cpp \
     src/testitem.cpp \
     src/testitemroot.cpp \
-    src/executabletestrunner.cpp
+    src/executabletestrunner.cpp \
+    src/fileformatbase.cpp \
+    src/fileformatv10.cpp \
+    src/utils.cpp
 
-HEADERS  += src/mainwindow.h \
+HEADERS  += \
+    src/mainwindow.h \
     src/executablebase.h \
     src/executabletester.h \
     src/testmodel.h \
@@ -29,7 +34,10 @@ HEADERS  += src/mainwindow.h \
     src/testitemcase.h \
     src/testitem.h \
     src/testitemroot.h \
-    src/executabletestrunner.h
+    src/executabletestrunner.h \
+    src/fileformatbase.h \
+    src/fileformatv10.h \
+    src/utils.h
 
 FORMS    += ui/mainwindow.ui
 

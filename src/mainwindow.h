@@ -20,6 +20,10 @@ public:
     virtual ~MainWindow();
 
 private slots:
+    void on_actionOpen_triggered();
+    void on_actionSave_triggered();
+    void on_actionSave_As_triggered();
+
     void on_actionRun_selected_triggered();
     void on_actionAdd_test_executable_triggered();
     void on_actionRefresh_tests_triggered();
@@ -33,6 +37,8 @@ private slots:
 
     void updateOutput(TestItemBase *base);
 
+    void on_actionNew_triggered();
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -40,6 +46,8 @@ private:
     Ui::MainWindow *_ui;
     QSettings _settings;
     TestModel _model;
+
+    QString _actualFile;
 
 };
 

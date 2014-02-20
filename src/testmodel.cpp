@@ -156,6 +156,19 @@ TestItemRoot * TestModel::rootItem()
     return _rootItem;
 }
 
+void TestModel::save(FileFormatBase *to)
+{
+    _rootItem->save(to);
+}
+
+void TestModel::read(FileFormatBase *from)
+{
+    beginResetModel();
+    _rootItem->deleteChildren();
+    _rootItem->read(from);
+    endResetModel();
+}
+
 void TestModel::execute()
 {
     _runningTestCount = _rootItem->prepareTestExecution();
@@ -273,6 +286,13 @@ void TestModel::refresh(TestItemExecutable *item)
     endRemoveRows();
 
     queueJob(new ExecutableTester(item, this));
+}
+
+void TestModel::clear()
+{
+    beginResetModel();
+    _rootItem->deleteChildren();
+    endResetModel();
 }
 
 void TestModel::setShuffle(bool shuffle)

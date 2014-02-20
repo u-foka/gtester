@@ -8,6 +8,7 @@ class TestItemCase;
 class TestItem : public TestItemBase
 {
 public:
+    explicit TestItem(TestItemBase *parent);
     TestItem(QString name, TestItemCase *parent);
     virtual ~TestItem();
 
@@ -20,12 +21,19 @@ public:
     void setTestState(TestStates state);
 
     const QString & getName() const;
+    void setName(const QString &name);
     bool getEnabled() const;
+    void setEnabled(bool enabled);
 
     const QString & getOutput() const;
     void setOutput(const QString &output);
 
     virtual int prepareTestExecution();
+
+    virtual void save(FileFormatBase *to);
+    virtual void saveChildren(FileFormatBase *to);
+
+    virtual void read(FileFormatBase *from);
 
 private:
     QString _name;

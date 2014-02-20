@@ -11,6 +11,11 @@ public:
 
     virtual QVariant getData(int column) const;
 
+    virtual void save(FileFormatBase *to);
+    virtual void saveChildren(FileFormatBase *to);
+
+    virtual void read(FileFormatBase *from);
+
 };
 
 #endif // TESTITEMROOT_H
