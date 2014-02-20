@@ -235,5 +235,6 @@ void MainWindow::on_actionNew_triggered()
     if (_model.isRunning())
         return;
 
+    _actualFile.clear();
     _model.clear();
 }
