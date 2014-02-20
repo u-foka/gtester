@@ -11,10 +11,16 @@ public:
 
     virtual QVariant getData(int column) const;
 
+    bool getShuffle();
+    void setShuffle(bool shuffle);
+
     virtual void save(FileFormatBase *to);
     virtual void saveChildren(FileFormatBase *to);
 
     virtual void read(FileFormatBase *from);
+
+private:
+    bool _shuffle;
 
 };
 

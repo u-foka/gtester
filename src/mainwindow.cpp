@@ -232,6 +232,8 @@ void MainWindow::on_actionOpen_triggered()
     _model.read(&from);
 
     file.close();
+
+    _ui->actionShuffle_tests->setChecked(_model.getShuffle());
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -242,6 +244,9 @@ void MainWindow::on_actionNew_triggered()
     _actualFile.clear();
     updateTitle();
     _model.clear();
+
+    _model.setShuffle(true);
+    _ui->actionShuffle_tests->setChecked(true);
 }
 
 void MainWindow::updateTitle()

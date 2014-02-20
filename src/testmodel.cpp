@@ -9,7 +9,7 @@
 #include "executabletestrunner.h"
 
 TestModel::TestModel(QObject *parent)
-    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this)), _shuffle(false), _running(false),
+    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this)), _running(false),
       _pendingJobs(), _runningTestCount(0), _completedTestCount(0)
 {
 }
@@ -182,7 +182,7 @@ void TestModel::execute()
         if (exec->getCheckState(0) == Qt::Unchecked)
             continue;
 
-        queueJob(new ExecutableTestRunner(exec, _shuffle, this));
+        queueJob(new ExecutableTestRunner(exec, _rootItem->getShuffle(), this));
     }
 }
 
@@ -295,9 +295,14 @@ void TestModel::clear()
     endResetModel();
 }
 
+bool TestModel::getShuffle()
+{
+    return _rootItem->getShuffle();
+}
+
 void TestModel::setShuffle(bool shuffle)
 {
-    _shuffle = shuffle;
+    _rootItem->setShuffle(shuffle);
 }
 
 void TestModel::jobExecuted()

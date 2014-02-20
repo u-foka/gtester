@@ -56,6 +56,7 @@ public slots:
     void refresh(TestItemBase *item);
     void refresh(TestItemExecutable *item);
     void clear();
+    bool getShuffle();
     void setShuffle(bool shuffle);
 
 private slots:
@@ -64,7 +65,6 @@ private slots:
 
 private:
     TestItemRoot *_rootItem;
-    bool _shuffle;
     bool _running;
     QList<ExecutableBase*> _pendingJobs;
 

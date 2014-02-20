@@ -25,6 +25,10 @@ void FileFormatV10::SaveItem(TestItemRoot *item)
     _writer.writeStartElement("GTester");
     _writer.writeAttribute("version", "1.0");
 
+    _writer.writeStartElement("Settings");
+    _writer.writeAttribute("shuffle", item->getShuffle() ? "true" : "false");
+    _writer.writeEndElement();
+
     item->saveChildren(this);
 
     _writer.writeEndElement();
@@ -77,6 +81,18 @@ void FileFormatV10::ReadItem(TestItemRoot *item)
     if (_reader.atEnd() || ! _reader.isStartElement() || _reader.name() != "GTester"
             || _reader.attributes().value("version") != "1.0")
         throw std::runtime_error("Start Element: GTester version=1.0 expected");
+
+    _reader.readNext();
+    if (_reader.isWhitespace()) _reader.readNext();
+    if (_reader.atEnd() || ! _reader.isStartElement() || _reader.name() != "Settings"
+            || ! _reader.attributes().hasAttribute("shuffle"))
+        throw std::runtime_error("Settings element expected");
+
+    item->setShuffle(_reader.attributes().value("shuffle") == "true");
+
+    _reader.readNext();
+    if (_reader.atEnd() || ! _reader.isEndElement())
+        throw std::runtime_error("End Element expected");
 
     readChildren(item);
 

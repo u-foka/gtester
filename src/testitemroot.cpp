@@ -3,7 +3,7 @@
 #include "fileformatbase.h"
 
 TestItemRoot::TestItemRoot(TestModel *model) :
-    TestItemBase(0, model)
+    TestItemBase(0, model), _shuffle(false)
 {
 }
 
@@ -21,6 +21,16 @@ QVariant TestItemRoot::getData(int column) const
     default:
         return QVariant();
     }
+}
+
+bool TestItemRoot::getShuffle()
+{
+    return _shuffle;
+}
+
+void TestItemRoot::setShuffle(bool shuffle)
+{
+    _shuffle = shuffle;
 }
 
 void TestItemRoot::save(FileFormatBase *to)
