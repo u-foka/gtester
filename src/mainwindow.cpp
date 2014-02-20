@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _actualFile()
 {
     _ui->setupUi(this);
+    updateTitle();
+
     _ui->testsTree->setModel(&_model);
     _ui->testsTree->setSelectionMode(QTreeView::SingleSelection);
     _ui->testsTree->setSelectionBehavior(QTreeView::SelectRows);
@@ -204,6 +206,7 @@ void MainWindow::on_actionSave_As_triggered()
 
     if (! newFile.isEmpty()) {
         _actualFile = newFile;
+        updateTitle();
         on_actionSave_triggered();
     }
 }
@@ -219,6 +222,7 @@ void MainWindow::on_actionOpen_triggered()
         return;
 
     _actualFile = newFile;
+    updateTitle();
 
     QFile file(_actualFile);
     file.open(QIODevice::ReadOnly);
@@ -236,5 +240,15 @@ void MainWindow::on_actionNew_triggered()
         return;
 
     _actualFile.clear();
+    updateTitle();
     _model.clear();
+}
+
+void MainWindow::updateTitle()
+{
+    QString title = QApplication::applicationDisplayName();
+    if (! _actualFile.isEmpty())
+        title += " - " + QFileInfo(_actualFile).fileName();
+
+    setWindowTitle(title);
 }

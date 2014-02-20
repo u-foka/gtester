@@ -48,6 +48,7 @@ private:
     TestModel _model;
 
     QString _actualFile;
+    void updateTitle();
 
 };
 
