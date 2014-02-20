@@ -246,9 +246,10 @@ void MainWindow::on_actionNew_triggered()
 
 void MainWindow::updateTitle()
 {
-    QString title = QApplication::applicationDisplayName();
-    if (! _actualFile.isEmpty())
-        title += " - " + QFileInfo(_actualFile).fileName();
+    if (_actualFile.isEmpty()) {
+        setWindowTitle(tr("New file"));
+        return;
+    }
 
-    setWindowTitle(title);
+    setWindowTitle(QFileInfo(_actualFile).fileName());
 }
