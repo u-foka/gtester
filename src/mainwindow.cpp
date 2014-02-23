@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
     updateTitle();
+#ifdef Q_OS_LINUX
+    setWindowIcon(QIcon(":/icons/gtester128.png"));
+#endif
 
     _ui->testsTree->setModel(&_model);
     _ui->testsTree->setSelectionMode(QTreeView::SingleSelection);
