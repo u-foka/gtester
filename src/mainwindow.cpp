@@ -276,7 +276,7 @@ void MainWindow::on_actionAbout_GTester_triggered()
             "<p>Version: %1</p>"
             "<p>GTester is a simple gui to run google test executables.</p>"
             "<p>Copyright (c) 2014 Tamás Eisenberger<br/>"
-            "Released under GPLv3.</p>"
+            "Released under <a href=\"http://www.gnu.org/licenses/gpl-3.0.html\">GPLv3</a>.</p>"
             "<p>The source is available at: <a href=\"https://github.com/u-foka/gtester\">https://github.com/u-foka/gtester</a><br/>"
             "Please report bugs using the issue tracker on github: <a href=\"https://github.com/u-foka/gtester/issues\">https://github.com/u-foka/gtester/issues</a></p>"
             ).arg(GTESTER_VERSION);
