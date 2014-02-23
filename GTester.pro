@@ -24,8 +24,7 @@ SOURCES += \
     src/executabletestrunner.cpp \
     src/fileformatbase.cpp \
     src/fileformatv10.cpp \
-    src/utils.cpp \
-    src/aboutdialog.cpp
+    src/utils.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -40,11 +39,9 @@ HEADERS += \
     src/executabletestrunner.h \
     src/fileformatbase.h \
     src/fileformatv10.h \
-    src/utils.h \
-    src/aboutdialog.h
+    src/utils.h
 
 FORMS += \
-    ui/mainwindow.ui \
-    ui/aboutdialog.ui
+    ui/mainwindow.ui
 
 RESOURCES += resources/icons.qrc

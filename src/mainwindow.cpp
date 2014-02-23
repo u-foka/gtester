@@ -10,7 +10,6 @@
 #include "testitemexecutable.h"
 #include "testitem.h"
 #include "fileformatv10.h"
-#include "aboutdialog.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -272,6 +271,19 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 void MainWindow::on_actionAbout_GTester_triggered()
 {
-    QPointer<AboutDialog> dlg = new AboutDialog(this);
-    dlg->exec();
+    QString aboutText = tr(
+            "<h3>About GTester</h3>"
+            "<p>Version: %1</p>"
+            "<p>GTester is a simple gui to run google test executables.</p>"
+            "<p>Copyright (c) 2014 Tamás Eisenberger<br/>"
+            "Released under GPLv3.</p>"
+            "<p>The source is available at: <a href=\"https://github.com/u-foka/gtester\">https://github.com/u-foka/gtester</a><br/>"
+            "Please report bugs using the issue tracker on github: <a href=\"https://github.com/u-foka/gtester/issues\">https://github.com/u-foka/gtester/issues</a></p>"
+            ).arg(GTESTER_VERSION);
+
+    QPointer<QMessageBox> msg = new QMessageBox(this);
+    msg->setIconPixmap(QPixmap(":/icons/gtester128.png"));
+    msg->setText(aboutText);
+    msg->addButton(QMessageBox::Close);
+    msg->exec();
 }
