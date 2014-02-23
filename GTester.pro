@@ -5,6 +5,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GTester
 TEMPLATE = app
 
+DEFINES += "GTESTER_VERSION=\"\\\"$$system(git describe)\\\"\""
+
 ICON = resources/gtester.icns
 RC_FILE = resources/gtester.rc
 
