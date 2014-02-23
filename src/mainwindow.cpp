@@ -4,10 +4,13 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QFile>
+#include <QMessageBox>
+#include <QPointer>
 
 #include "testitemexecutable.h"
 #include "testitem.h"
 #include "fileformatv10.h"
+#include "aboutdialog.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -257,4 +260,15 @@ void MainWindow::updateTitle()
     }
 
     setWindowTitle(QFileInfo(_actualFile).fileName());
+}
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+    QMessageBox::aboutQt(this);
+}
+
+void MainWindow::on_actionAbout_GTester_triggered()
+{
+    QPointer<AboutDialog> dlg = new AboutDialog(this);
+    dlg->exec();
 }

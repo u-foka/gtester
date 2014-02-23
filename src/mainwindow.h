@@ -39,6 +39,10 @@ private slots:
 
     void on_actionNew_triggered();
 
+    void on_actionAbout_Qt_triggered();
+
+    void on_actionAbout_GTester_triggered();
+
 protected:
     void closeEvent(QCloseEvent *event);
 

@@ -9,5 +9,6 @@
     	<file>process-run.png</file>
     	<file>process-stop.png</file>
     	<file>view-refresh.png</file>
+        <file>gtester128.png</file>
     </qresource>
 </RCC>
