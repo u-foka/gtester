@@ -141,6 +141,30 @@ TestItemBase::TestStates TestItemBase::getTestState() const
     return state;
 }
 
+void TestItemBase::selectAll()
+{
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
+        (*it)->selectAll();
+        _model->update(_model->index(*it, ColumnName), QVector<int>() << Qt::CheckStateRole);
+    }
+}
+
+void TestItemBase::deselectAll()
+{
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
+        (*it)->deselectAll();
+        _model->update(_model->index(*it, ColumnName), QVector<int>() << Qt::CheckStateRole);
+    }
+}
+
+void TestItemBase::invertSelection()
+{
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
+        (*it)->invertSelection();
+        _model->update(_model->index(*it, ColumnName), QVector<int>() << Qt::CheckStateRole);
+    }
+}
+
 void TestItemBase::deleteChildren()
 {
     // Need to delete children in reverse order because they will

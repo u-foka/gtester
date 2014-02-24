@@ -20,6 +20,10 @@ public:
     virtual TestStates getTestState() const;
     void setTestState(TestStates state);
 
+    virtual void selectAll();
+    virtual void deselectAll();
+    virtual void invertSelection();
+
     const QString & getName() const;
     void setName(const QString &name);
     bool getEnabled() const;

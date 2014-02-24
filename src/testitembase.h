@@ -40,6 +40,10 @@ public:
 
     virtual TestStates getTestState() const;
 
+    virtual void selectAll();
+    virtual void deselectAll();
+    virtual void invertSelection();
+
     void deleteChildren();
     virtual int prepareTestExecution();
 

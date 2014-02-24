@@ -305,6 +305,21 @@ void TestModel::setShuffle(bool shuffle)
     _rootItem->setShuffle(shuffle);
 }
 
+void TestModel::selectAll()
+{
+    _rootItem->selectAll();
+}
+
+void TestModel::deselectAll()
+{
+    _rootItem->deselectAll();
+}
+
+void TestModel::invertSelection()
+{
+    _rootItem->invertSelection();
+}
+
 void TestModel::jobExecuted()
 {
     if (! _running) {

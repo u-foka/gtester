@@ -59,6 +59,11 @@ public slots:
     bool getShuffle();
     void setShuffle(bool shuffle);
 
+    void selectAll();
+    void deselectAll();
+    void invertSelection();
+
+
 private slots:
     void jobExecuted();
     void jobFinished();

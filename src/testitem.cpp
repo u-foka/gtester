@@ -74,6 +74,21 @@ void TestItem::setTestState(TestStates state)
     getModel()->updateParents(index, roles, ColumnState);
 }
 
+void TestItem::selectAll()
+{
+    _enabled = true;
+}
+
+void TestItem::deselectAll()
+{
+    _enabled = false;
+}
+
+void TestItem::invertSelection()
+{
+    _enabled = !_enabled;
+}
+
 const QString & TestItem::getName() const
 {
     return _name;

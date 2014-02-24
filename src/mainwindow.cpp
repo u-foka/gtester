@@ -47,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_ui->actionRun_selected, SIGNAL(triggered()), &_model, SLOT(execute()));
     connect(_ui->actionTerminate, SIGNAL(triggered()), &_model, SLOT(terminate()));
     connect(_ui->actionShuffle_tests, SIGNAL(toggled(bool)), &_model, SLOT(setShuffle(bool)));
+    connect(_ui->actionSelect_All, SIGNAL(triggered()), &_model, SLOT(selectAll()));
+    connect(_ui->actionDeselect_All, SIGNAL(triggered()), &_model, SLOT(deselectAll()));
+    connect(_ui->actionInvert_selection, SIGNAL(triggered()), &_model, SLOT(invertSelection()));
 
     _model.setShuffle(_ui->actionShuffle_tests->isChecked());
 
