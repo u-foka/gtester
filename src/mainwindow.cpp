@@ -282,7 +282,7 @@ void MainWindow::on_actionAbout_GTester_triggered()
             "Released under <a href=\"http://www.gnu.org/licenses/gpl-3.0.html\">GPLv3</a>.</p>"
             "<p>The source is available at: <a href=\"https://github.com/u-foka/gtester\">https://github.com/u-foka/gtester</a><br/>"
             "Please report bugs using the issue tracker on github: <a href=\"https://github.com/u-foka/gtester/issues\">https://github.com/u-foka/gtester/issues</a></p>"
-            ).arg(GTESTER_VERSION);
+        ).arg(QString(GTESTER_VERSION).replace('_', ' '));
 
     QPointer<QMessageBox> msg = new QMessageBox(this);
     msg->setIconPixmap(QPixmap(":/icons/gtester128.png"));
