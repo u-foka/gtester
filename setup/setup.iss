@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "GTester"
-#define MyAppVersion "0.1"
+#define MyAppVersion "1.0 beta1"
 #define MyAppExeName "GTester.exe"
 
 [Setup]
@@ -16,7 +16,7 @@ AppVersion={#MyAppVersion}
 DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-LicenseFile=D:\Downloads\gpl-3.0.txt
+LicenseFile=../LICENSE
 OutputBaseFilename=gtester-setup
 Compression=lzma
 SolidCompression=yes
