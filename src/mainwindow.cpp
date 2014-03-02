@@ -35,7 +35,11 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->testsTree->setSelectionBehavior(QTreeView::SelectRows);
     _ui->testsTree->header()->resizeSection(0, 250);
     _ui->testsTree->header()->setStretchLastSection(false);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     _ui->testsTree->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+#else
+    _ui->testsTree->header()->setResizeMode(0, QHeaderView::Stretch);
+#endif
 
     // Setup splitter
     _ui->splitter->setStretchFactor(0, 1);

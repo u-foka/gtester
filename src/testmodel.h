@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
+#include <QVector>
 
 class ExecutableBase;
 class TestItemBase;

@@ -57,7 +57,11 @@ bool TestModel::setData(const QModelIndex &index, const QVariant &value, int rol
         item->setCheckState(index.column(), value);
         QVector<int> roles;
         roles << role;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         emit dataChanged(index, index, roles);
+#else
+        emit dataChanged(index, index);
+#endif
         updateParents(index, roles);
         updateChildren(index, roles);
         return true;
@@ -359,14 +363,24 @@ void TestModel::queueJob(ExecutableBase *job)
 
 void TestModel::update(const QModelIndex &index, QVector<int> roles)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     emit dataChanged(index, index, roles);
+#else
+    Q_UNUSED(roles);
+    emit dataChanged(index, index);
+#endif
 }
 
 void TestModel::updateParents(const QModelIndex &index, QVector<int> roles, int column)
 {
     for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent()) {
         QModelIndex colIndex = this->index(parent.row(), column, parent.parent());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         emit dataChanged(colIndex, colIndex, roles);
+#else
+        Q_UNUSED(roles);
+        emit dataChanged(colIndex, colIndex);
+#endif
     }
 }
 
@@ -376,7 +390,11 @@ void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
 
     for (int i = 0; i < item->childCount(); i++) {
         QModelIndex child = index.child(i, index.column());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         emit dataChanged(child, child, roles);
+#else
+        emit dataChanged(child, child);
+#endif
         updateChildren(child, roles);
     }
 }
