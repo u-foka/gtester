@@ -1,6 +1,9 @@
 #include "testmodel.h"
 
+#include <stdexcept>
+
 #include <QtGui>
+#include <QMessageBox>
 
 #include "testitemroot.h"
 #include "testitemexecutable.h"
@@ -336,17 +339,55 @@ void TestModel::jobExecuted()
 void TestModel::jobFinished()
 {
     ExecutableBase *currentJob = _pendingJobs.first();
-    _pendingJobs.pop_front();
+    _pendingJobs.removeFirst();
     delete currentJob; // Delete here to prevent memory leak if for example any handler of finished crashes
 
     if (_pendingJobs.count() > 0) {
-        _pendingJobs[0]->execute();
+        executeNextJob();
     } else {
         _running = false;
         _runningTestCount = 0;
         _completedTestCount = 0;
         emit executionStateChanged(_running);
         emit finished();
+    }
+}
+
+void TestModel::executeNextJob()
+{
+    try {
+        if (_pendingJobs.count() < 1)
+            throw std::runtime_error("No jobs pending");
+
+        ExecutableBase *job = _pendingJobs.first();
+        if (job->getStatus() != ExecutableBase::NotRunYet)
+            throw std::runtime_error("The job is already running");
+
+        job->execute();
+    } catch(std::runtime_error &e) {
+        if (_pendingJobs.count() > 0) {
+            delete _pendingJobs.takeFirst();
+        }
+
+        if (_pendingJobs.count() > 0) { // still more than zero so there are other jobs
+            int res =  QMessageBox::question(0, tr("Execution failed"),
+                                             tr("%1\nDo you want to continue with the next?").arg(e.what()),
+                                             QMessageBox::Yes, QMessageBox::No);
+
+            if (res == QMessageBox::Yes) {
+                executeNextJob();
+            } else {
+                qDeleteAll(_pendingJobs);
+                _pendingJobs.clear();
+                emit finished();
+            }
+        } else {
+            QMessageBox::warning(0, tr("Execution failed"),
+                                 e.what(), QMessageBox::Ok);
+
+            emit finished();
+        }
+
     }
 }
 
@@ -357,8 +398,10 @@ void TestModel::queueJob(ExecutableBase *job)
 
     _pendingJobs.append(job);
 
-    if (_pendingJobs.count() == 1)
-        job->execute();
+    if (_pendingJobs.count() == 1) {
+        // Execute async to let the caller add any more items to the queue before it actually gets executed
+        QMetaObject::invokeMethod(this, "executeNextJob", Qt::QueuedConnection);
+    }
 }
 
 void TestModel::update(const QModelIndex &index, QVector<int> roles)

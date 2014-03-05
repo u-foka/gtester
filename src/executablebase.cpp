@@ -20,8 +20,9 @@ ExecutableBase::ExecutableStatus ExecutableBase::getStatus()
 
 void ExecutableBase::execute()
 {
+    _file.refresh();
     if (! _file.isFile() || ! _file.isExecutable()) {
-        throw std::runtime_error("Unable to run file");
+        throw std::runtime_error(tr("Unable to execute: %1").arg(_file.fileName()).toStdString());
     }
 
     _status = Executing;

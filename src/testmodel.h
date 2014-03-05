@@ -68,6 +68,7 @@ public slots:
 private slots:
     void jobExecuted();
     void jobFinished();
+    void executeNextJob();
 
 private:
     TestItemRoot *_rootItem;
