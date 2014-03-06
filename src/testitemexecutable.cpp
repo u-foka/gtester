@@ -43,6 +43,7 @@ const QFileInfo & TestItemExecutable::getFileInfo() const
 
 void TestItemExecutable::setFileInfo(const QFileInfo &file)
 {
+    _file.refresh();
     if (! file.exists() || ! file.isExecutable())
         throw std::runtime_error("The given test executable not found: " + file.filePath().toStdString());
 

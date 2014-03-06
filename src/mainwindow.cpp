@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <stdexcept>
+
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QFile>
@@ -236,16 +238,24 @@ void MainWindow::on_actionOpen_triggered()
     _actualFile = newFile;
     updateTitle();
 
-    QFile file(_actualFile);
-    file.open(QIODevice::ReadOnly);
+    try {
+        QFile file(_actualFile);
+        file.open(QIODevice::ReadOnly);
 
-    FileFormatV10 from(file);
+        FileFormatV10 from(file);
 
-    _model.read(&from);
+        _model.read(&from);
 
-    file.close();
+        file.close();
 
-    _ui->actionShuffle_tests->setChecked(_model.getShuffle());
+        _ui->actionShuffle_tests->setChecked(_model.getShuffle());
+    } catch (std::runtime_error &e) {
+        emit on_actionNew_triggered();
+
+        QMessageBox::critical(this, tr("Failed to open file"),
+                              tr("Failed to open file.\nTechnical details: %1").arg(e.what()),
+                              QMessageBox::Ok);
+    }
 }
 
 void MainWindow::on_actionNew_triggered()
