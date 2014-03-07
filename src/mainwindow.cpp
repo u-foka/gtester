@@ -201,6 +201,11 @@ void MainWindow::on_actionSave_triggered()
         return;
     }
 
+    QFileInfo info(_actualFile);
+    if (info.exists()) {
+        QFile::remove(_actualFile);
+    }
+
     QFile file(_actualFile);
     file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
