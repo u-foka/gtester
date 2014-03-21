@@ -12,6 +12,7 @@ const QList<QString> TestItemBase::TestStateNames(QList<QString>() <<
         "" <<
         "Passed" <<
         "Failed" <<
+        "Terminated" <<
         "Partially passed"
         );
 
@@ -19,6 +20,7 @@ const QList<QVariant> TestItemBase::TestStateColors(QList<QVariant>() <<
         QVariant() <<
         QColor(Qt::green) <<
         QColor(Qt::red) <<
+        QColor(Qt::darkRed) <<
         QColor(Qt::yellow)
         );
 
@@ -126,6 +128,8 @@ TestItemBase::TestStates TestItemBase::getTestState() const
     for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
         if ((*it)->getTestState() == StateFail) {
             return StateFail;
+        } else if ((*it)->getTestState() == StateTerminated) {
+            return StateTerminated;
         } else if (it == _childItems.begin()) {
             // Inicialize enabled with the first item
             state = (*it)->getTestState();

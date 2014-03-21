@@ -51,6 +51,7 @@ void ExecutableTestRunner::parseOutput()
 
             _currentItem->setTestState(TestItemBase::StatePass);
             _currentItem->setOutput(_testOutput.join("\n"));
+            _currentItem = 0;
 
         } else if (testFail.exactMatch(line)) {
 
@@ -61,6 +62,7 @@ void ExecutableTestRunner::parseOutput()
 
             _currentItem->setTestState(TestItemBase::StateFail);
             _currentItem->setOutput(_testOutput.join("\n"));
+            _currentItem = 0;
 
         } else {
 
@@ -68,5 +70,11 @@ void ExecutableTestRunner::parseOutput()
 
         }
 
+    }
+
+    if (_status != Running && _currentItem != 0) {
+        // Test exited within a test body
+        _currentItem->setTestState(TestItemBase::StateTerminated);
+        _currentItem = 0;
     }
 }

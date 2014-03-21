@@ -17,6 +17,7 @@ public:
         StateNone = 0,
         StatePass,
         StateFail,
+        StateTerminated,
         StatePartialPass
     };
 
