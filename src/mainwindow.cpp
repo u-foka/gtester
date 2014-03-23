@@ -130,7 +130,11 @@ void MainWindow::on_actionAdd_test_executable_triggered()
     if (_model.isRunning())
         return;
 
-    QString fileName = QFileDialog::getOpenFileName(this, "Open test executable");
+#ifdef Q_OS_WIN
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open test executable"), QString(), tr("Executable files (*.exe);;All files (*.*)"));
+#else
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open test executable"), QString(), tr("All files (*.*)"));
+#endif
     if (fileName.isEmpty())
         return;
 
@@ -221,7 +225,7 @@ void MainWindow::on_actionSave_As_triggered()
     if (_model.isRunning())
         return;
 
-    QString newFile = QFileDialog::getSaveFileName(this);
+    QString newFile = QFileDialog::getSaveFileName(this, tr("Save GTester file"), QString(), tr("GTester Files (*.gtester);;All Files (*.*)"));
 
     if (! newFile.isEmpty()) {
         _actualFile = newFile;
@@ -235,7 +239,7 @@ void MainWindow::on_actionOpen_triggered()
     if (_model.isRunning())
         return;
 
-    QString newFile = QFileDialog::getOpenFileName(this, "Open GTester file");
+    QString newFile = QFileDialog::getOpenFileName(this, tr("Open GTester file"), QString(), tr("GTester files (*.gtester);;All files (*.*)"));
 
     if (newFile.isEmpty())
         return;
