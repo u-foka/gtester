@@ -131,9 +131,9 @@ void MainWindow::on_actionAdd_test_executable_triggered()
         return;
 
 #ifdef Q_OS_WIN
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open test executable"), QString(), tr("Executable files (*.exe);;All files (*.*)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open test executable"), QDir::homePath(), tr("Executable files (*.exe);;All files (*.*)"));
 #else
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open test executable"), QString(), tr("All files (*.*)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open test executable"), QDir::homePath(), tr("All files (*.*)"));
 #endif
     if (fileName.isEmpty())
         return;
@@ -225,9 +225,14 @@ void MainWindow::on_actionSave_As_triggered()
     if (_model.isRunning())
         return;
 
-    QString newFile = QFileDialog::getSaveFileName(this, tr("Save GTester file"), QString(), tr("GTester Files (*.gtester);;All Files (*.*)"));
+    QString newFile = QFileDialog::getSaveFileName(this, tr("Save GTester file"), QDir::homePath(), tr("GTester Files (*.gtester);;All Files (*.*)"));
 
     if (! newFile.isEmpty()) {
+        // Append extension if necessary
+        if (! newFile.endsWith(".gtester")) {
+            newFile.append(".gtester");
+        }
+
         _actualFile = newFile;
         updateTitle();
         on_actionSave_triggered();
@@ -239,7 +244,7 @@ void MainWindow::on_actionOpen_triggered()
     if (_model.isRunning())
         return;
 
-    QString newFile = QFileDialog::getOpenFileName(this, tr("Open GTester file"), QString(), tr("GTester files (*.gtester);;All files (*.*)"));
+    QString newFile = QFileDialog::getOpenFileName(this, tr("Open GTester file"), QDir::homePath(), tr("GTester files (*.gtester);;All files (*.*)"));
 
     if (newFile.isEmpty())
         return;
