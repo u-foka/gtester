@@ -5,9 +5,11 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QDesktopServices>
+#include <QLocalSocket>
 
 #include "mainwindow.h"
 #include "defaultmenu.h"
+#include "setfocus.h"
 
 #ifdef Q_OS_MAC
 
@@ -24,8 +26,10 @@ bool dockClickHandler(id self,SEL _cmd,...)
 
 #endif
 
+const QString InstanceSocketName = "hu.iwstudio.gtester.instance.socket";
+
 Application::Application(int &argc, char **argv) :
-    QApplication(argc, argv), _windows(), _defaultMenu(new DefaultMenu())
+    QApplication(argc, argv), _windows(), _defaultMenu(new DefaultMenu()), _instanceSocket()
 {
     setApplicationName("gtester");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -57,6 +61,8 @@ Application::Application(int &argc, char **argv) :
     }
 
 #endif
+
+    connect(&_instanceSocket, SIGNAL(newConnection()), this, SLOT(InstanceSocketConnection()));
 }
 
 Application::~Application()
@@ -65,11 +71,22 @@ Application::~Application()
 
 int Application::exec()
 {
+    QLocalSocket instanceClient;
+    instanceClient.connectToServer(InstanceSocketName);
+    if (instanceClient.waitForConnected(500)) {
+        // Notify the existing instance
+
+        return 0;
+    }
+
+    QLocalServer::removeServer(InstanceSocketName);
+    AppInstance->_instanceSocket.listen(InstanceSocketName);
+
 #ifdef Q_OS_LINUX
     setWindowIcon(QIcon(":/icons/gtester128.png"));
 #endif
 
-    ((Application*)qApp)->OpenNewWindow();
+    AppInstance->OpenNewWindow();
 
     return QApplication::exec();
 }
@@ -102,6 +119,7 @@ void Application::OpenNewWindow(const QString &fileName)
     }
 
     w->show();
+    SetFocus::To(w);
     if (! fileName.isEmpty()) {
         w->OpenFile(fileName);
     }
@@ -158,4 +176,21 @@ void Application::CloseAndQuit()
 void Application::ReportABug()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/u-foka/gtester/issues"));
+}
+
+void Application::InstanceSocketConnection()
+{
+    qDebug() << "InstanceSocketConnection";
+
+    QPointer<QLocalSocket> socket(_instanceSocket.nextPendingConnection());
+
+    qDebug() << "activeWindow() " << activeWindow();
+    if (activeWindow() != 0) {
+        SetFocus::To(activeWindow());
+    } else if (_windows.count() > 0) {
+        // Workaround for qt bug on Mac OS
+        SetFocus::To(_windows.at(0));
+    } else {
+        OpenNewWindow();
+    }
 }

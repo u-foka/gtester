@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QVector>
+#include <QLocalServer>
 
 #define AppInstance (static_cast< ::Application *>(::QCoreApplication::instance()))
 
@@ -34,9 +35,13 @@ public slots:
 
     void ReportABug();
 
+    void InstanceSocketConnection();
+
 private:
     QVector<MainWindow*> _windows;
     DefaultMenu *_defaultMenu;
+
+    QLocalServer _instanceSocket;
 
 };
 

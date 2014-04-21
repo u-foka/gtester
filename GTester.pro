@@ -1,4 +1,4 @@
-QT       += core xml gui
+QT       += core xml gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,7 +43,8 @@ HEADERS += \
     src/fileformatv10.h \
     src/utils.h \
     src/application.h \
-    src/defaultmenu.h
+    src/defaultmenu.h \
+    src/setfocus.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -52,4 +53,12 @@ RESOURCES += resources/icons.qrc
 
 mac {
     LIBS += -framework cocoa
+
+    OBJECTIVE_SOURCES += \
+        src/setfocus.mm
+}
+
+linux|win32 {
+    SOURCES += \
+        src/setfocus.cpp
 }
