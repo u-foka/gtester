@@ -325,12 +325,12 @@ void MainWindow::on_actionSave_As_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    AppInstance->selectOpenFile();
+    AppInstance->SelectOpenFile();
 }
 
 void MainWindow::on_actionNew_triggered()
 {
-    AppInstance->openNewWindow();
+    AppInstance->OpenNewWindow();
 }
 
 void MainWindow::updateTitle()

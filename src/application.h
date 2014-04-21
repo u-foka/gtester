@@ -23,11 +23,11 @@ signals:
 
 public slots:
 #ifdef Q_OS_MAC
-    void onDockClick();
+    void DockClick();
 #endif
-    void openNewWindow(const QString &fileName = QString());
-    void selectOpenFile();
-    void onWindowClosed(MainWindow *window);
+    void OpenNewWindow(const QString &fileName = QString());
+    void SelectOpenFile();
+    void WindowClosed(MainWindow *window);
     void ShowAboutBox();
 
     void CloseAndQuit();

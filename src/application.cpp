@@ -18,7 +18,7 @@ bool dockClickHandler(id self,SEL _cmd,...)
 {
     Q_UNUSED(self)
     Q_UNUSED(_cmd)
-    ((Application*)qApp)->onDockClick();
+    AppInstance->DockClick();
     return true;
 }
 
@@ -69,21 +69,21 @@ int Application::exec()
     setWindowIcon(QIcon(":/icons/gtester128.png"));
 #endif
 
-    ((Application*)qApp)->openNewWindow();
+    ((Application*)qApp)->OpenNewWindow();
 
     return QApplication::exec();
 }
 
 #ifdef Q_OS_MAC
-void Application::onDockClick()
+void Application::DockClick()
 {
     if (_windows.empty()) {
-        openNewWindow();
+        OpenNewWindow();
     }
 }
 #endif
 
-void Application::openNewWindow(const QString &fileName)
+void Application::OpenNewWindow(const QString &fileName)
 {
     QPoint windowPos;
     bool useWindowPos = false;
@@ -96,7 +96,7 @@ void Application::openNewWindow(const QString &fileName)
     MainWindow *w = new MainWindow();
     _windows.push_back(w);
 
-    connect(w, SIGNAL(Closed(MainWindow*)), this, SLOT(onWindowClosed(MainWindow*)));
+    connect(w, SIGNAL(Closed(MainWindow*)), this, SLOT(WindowClosed(MainWindow*)));
     if (useWindowPos) {
         w->setGeometry(windowPos.x() + 20, windowPos.y() + 20, w->width(), w->height());
     }
@@ -107,7 +107,7 @@ void Application::openNewWindow(const QString &fileName)
     }
 }
 
-void Application::selectOpenFile()
+void Application::SelectOpenFile()
 {
     QString newFile = QFileDialog::getOpenFileName(0, tr("Open GTester file"), QDir::homePath(), tr("GTester files (*.gtester);;All files (*)"));
 
@@ -118,11 +118,11 @@ void Application::selectOpenFile()
     if (window != 0 && window->isClean()) {
         window->OpenFile(newFile);
     } else {
-        openNewWindow(newFile);
+        OpenNewWindow(newFile);
     }
 }
 
-void Application::onWindowClosed(MainWindow *window)
+void Application::WindowClosed(MainWindow *window)
 {
     _windows.removeAt(_windows.indexOf(window));
     delete window;
