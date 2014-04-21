@@ -32,6 +32,8 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+    bool isClean();
+    bool isChanged();
     bool isRunning();
     TestItemRoot *rootItem();
 
@@ -45,6 +47,7 @@ signals:
     void executionStateChanged(bool running);
     void progressUpdated(int percent);
     void testStarted(const QString &test);
+    void changed();
 
 public slots:
     void execute();
@@ -69,9 +72,12 @@ private slots:
     void jobExecuted();
     void jobFinished();
     void executeNextJob();
+    void change(bool c = true);
 
 private:
     TestItemRoot *_rootItem;
+    bool _clean;
+    bool _changed;
     bool _running;
     QList<ExecutableBase*> _pendingJobs;
 
@@ -83,7 +89,6 @@ private:
     void update(const QModelIndex &index, QVector<int> roles = QVector<int>());
     void updateParents(const QModelIndex &index, QVector<int> roles = QVector<int>(), int column = 0);
     void updateChildren(const QModelIndex &index, QVector<int> roles = QVector<int>());
-    void updateProgress(int percent);
     void updateRunningTest(const QString &test);
 
     friend class TestItemBase;

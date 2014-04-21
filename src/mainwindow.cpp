@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QPointer>
 
+#include "application.h"
 #include "testitemexecutable.h"
 #include "testitem.h"
 #include "fileformatv10.h"
@@ -27,9 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     _actualFile()
 {
     _ui->setupUi(this);
-    updateTitle();
-#ifdef Q_OS_LINUX
-    setWindowIcon(QIcon(":/icons/gtester128.png"));
+
+#ifdef Q_OS_MAC
+    _ui->statusBar->setSizeGripEnabled(false);
 #endif
 
     _ui->testsTree->setModel(&_model);
@@ -47,8 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->splitter->setStretchFactor(0, 1);
     _ui->splitter->setStretchFactor(1, 0);
 
+    // Connect Widget & Action signals
     connect(_ui->testsTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(testsTree_selectionChanged(QItemSelection,QItemSelection)));
+
+    connect(_ui->actionQuit, SIGNAL(triggered()), AppInstance, SLOT(CloseAndQuit()));
+    connect(_ui->actionReport_a_bug, SIGNAL(triggered()), AppInstance, SLOT(ReportABug()));
 
     connect(_ui->actionRun_selected, SIGNAL(triggered()), &_model, SLOT(execute()));
     connect(_ui->actionTerminate, SIGNAL(triggered()), &_model, SLOT(terminate()));
@@ -57,8 +62,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_ui->actionDeselect_All, SIGNAL(triggered()), &_model, SLOT(deselectAll()));
     connect(_ui->actionInvert_selection, SIGNAL(triggered()), &_model, SLOT(invertSelection()));
 
-    _model.setShuffle(_ui->actionShuffle_tests->isChecked());
-
+    // Connect Model signals
+    connect(&_model, SIGNAL(changed()), this, SLOT(updateTitle()));
     connect(&_model, SIGNAL(executionStateChanged(bool)), this, SLOT(model_executionStateChanged(bool)));
     connect(&_model, SIGNAL(progressUpdated(int)), this, SLOT(model_progressUpdated(int)));
     connect(&_model, SIGNAL(testStarted(QString)), this, SLOT(model_testStarted(QString)));
@@ -70,11 +75,56 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->splitter->restoreState(_settings.value(SETTINGS_SPLITTER_STATE).toByteArray());
 
     _ui->testsTree->header()->restoreState(_settings.value(SETTINGS_TREEHEADER_STATE).toByteArray());
+
+    Clean();
 }
 
 MainWindow::~MainWindow()
 {
     delete _ui;
+}
+
+void MainWindow::Clean()
+{
+    if (_model.isRunning())
+        return;
+
+    _actualFile.clear();
+    _model.clear();
+    updateTitle();
+}
+
+void MainWindow::OpenFile(const QString &fileName)
+{
+    _actualFile = fileName;
+    updateTitle();
+
+    try {
+        QFile file(_actualFile);
+        file.open(QIODevice::ReadOnly);
+
+        FileFormatV10 from(file);
+
+        _model.read(&from);
+
+        file.close();
+    } catch (std::runtime_error &e) {
+        Clean();
+
+        QMessageBox::critical(this, tr("Failed to open file"),
+                              tr("Failed to open file.\nTechnical details: %1").arg(e.what()),
+                              QMessageBox::Ok);
+    }
+}
+
+bool MainWindow::isClean()
+{
+    return _model.isClean();
+}
+
+bool MainWindow::isChanged()
+{
+    return _model.isChanged();
 }
 
 void MainWindow::model_executionStateChanged(bool running)
@@ -85,7 +135,6 @@ void MainWindow::model_executionStateChanged(bool running)
     _ui->actionOpen->setEnabled(!running);
     _ui->actionSave->setEnabled(!running);
     _ui->actionSave_As->setEnabled(!running);
-    _ui->actionQuit->setEnabled(!running);
 
     _ui->actionAdd_test_executable->setEnabled(!running);
     _ui->actionRemove_test_executable->setEnabled(!running && hasSelection);
@@ -94,6 +143,7 @@ void MainWindow::model_executionStateChanged(bool running)
     _ui->actionTerminate->setEnabled(running);
 
     if (!running) {
+        _ui->progressBar->setValue(0);
         _ui->statusBar->clearMessage();
         if (hasSelection)
             updateOutput(static_cast<TestItemBase*>(
@@ -110,6 +160,37 @@ void MainWindow::closeEvent(QCloseEvent *event) {
         return;
     }
 
+    if (! _model.isClean() && _model.isChanged()) {
+        QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Question);
+            msgBox.setText(tr("The document has been modified."));
+            msgBox.setInformativeText(tr("Do you want to save your changes?"));
+            msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Save);
+
+            switch (msgBox.exec()) {
+            case QMessageBox::Save:
+                on_actionSave_triggered();
+                if (_model.isChanged()) {
+                    event->ignore();
+                    return;
+                }
+
+                break;
+
+            case QMessageBox::Discard:
+                // Do nothing
+                break;
+
+            case QMessageBox::Cancel:
+                event->ignore();
+                return;
+
+            default:
+                throw std::runtime_error("Invalid ansver");
+            }
+    }
+
     // Save geometry
     _settings.setValue(SETTINGS_WINDOW_GEOMETRY, saveGeometry());
     _settings.setValue(SETTINGS_WINDOW_STATE, saveState());
@@ -117,6 +198,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     _settings.setValue(SETTINGS_SPLITTER_STATE, _ui->splitter->saveState());
 
     _settings.setValue(SETTINGS_TREEHEADER_STATE, _ui->testsTree->header()->saveState());
+
+    // Notify application
+    emit Closed(this);
 }
 
 void MainWindow::on_actionRun_selected_triggered()
@@ -241,58 +325,28 @@ void MainWindow::on_actionSave_As_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    if (_model.isRunning())
-        return;
-
-    QString newFile = QFileDialog::getOpenFileName(this, tr("Open GTester file"), QDir::homePath(), tr("GTester files (*.gtester);;All files (*)"));
-
-    if (newFile.isEmpty())
-        return;
-
-    _actualFile = newFile;
-    updateTitle();
-
-    try {
-        QFile file(_actualFile);
-        file.open(QIODevice::ReadOnly);
-
-        FileFormatV10 from(file);
-
-        _model.read(&from);
-
-        file.close();
-
-        _ui->actionShuffle_tests->setChecked(_model.getShuffle());
-    } catch (std::runtime_error &e) {
-        emit on_actionNew_triggered();
-
-        QMessageBox::critical(this, tr("Failed to open file"),
-                              tr("Failed to open file.\nTechnical details: %1").arg(e.what()),
-                              QMessageBox::Ok);
-    }
+    AppInstance->selectOpenFile();
 }
 
 void MainWindow::on_actionNew_triggered()
 {
-    if (_model.isRunning())
-        return;
-
-    _actualFile.clear();
-    updateTitle();
-    _model.clear();
-
-    _model.setShuffle(true);
-    _ui->actionShuffle_tests->setChecked(true);
+    AppInstance->openNewWindow();
 }
 
 void MainWindow::updateTitle()
 {
-    if (_actualFile.isEmpty()) {
-        setWindowTitle(tr("New file"));
-        return;
-    }
+    setWindowFilePath(_actualFile);
 
-    setWindowTitle(QFileInfo(_actualFile).fileName());
+    QString title;
+    if (_actualFile.isEmpty()) {
+        title = tr("New file");
+    } else {
+        title = QFileInfo(_actualFile).fileName();
+    }
+    title.append("[*]");
+    setWindowTitle(title);
+
+    setWindowModified(_model.isChanged());
 }
 
 void MainWindow::on_actionAbout_Qt_triggered()
@@ -302,19 +356,5 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 void MainWindow::on_actionAbout_GTester_triggered()
 {
-    QString aboutText = tr(
-            "<h3>About GTester</h3>"
-            "<p>Version: %1</p>"
-            "<p>GTester is a simple gui to run google test executables.</p>"
-            "<p>Copyright (c) 2014 Tamás Eisenberger<br/>"
-            "Released under <a href=\"http://www.gnu.org/licenses/gpl-3.0.html\">GPLv3</a>.</p>"
-            "<p>The source is available at: <a href=\"https://github.com/u-foka/gtester\">https://github.com/u-foka/gtester</a><br/>"
-            "Please report bugs using the issue tracker on github: <a href=\"https://github.com/u-foka/gtester/issues\">https://github.com/u-foka/gtester/issues</a></p>"
-        ).arg(QString(GTESTER_VERSION).replace('_', ' '));
-
-    QPointer<QMessageBox> msg = new QMessageBox(this);
-    msg->setIconPixmap(QPixmap(":/icons/gtester128.png"));
-    msg->setText(aboutText);
-    msg->addButton(QMessageBox::Close);
-    msg->exec();
+    AppInstance->ShowAboutBox();
 }

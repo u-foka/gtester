@@ -12,8 +12,8 @@
 #include "executabletestrunner.h"
 
 TestModel::TestModel(QObject *parent)
-    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this)), _running(false),
-      _pendingJobs(), _runningTestCount(0), _completedTestCount(0)
+    : QAbstractItemModel(parent), _rootItem(new TestItemRoot(this)), _clean(true),
+      _changed(false), _running(false), _pendingJobs(), _runningTestCount(0), _completedTestCount(0)
 {
 }
 
@@ -67,6 +67,7 @@ bool TestModel::setData(const QModelIndex &index, const QVariant &value, int rol
 #endif
         updateParents(index, roles);
         updateChildren(index, roles);
+        change();
         return true;
     }
 
@@ -153,6 +154,16 @@ int TestModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
+bool TestModel::isClean()
+{
+    return _clean;
+}
+
+bool TestModel::isChanged()
+{
+    return _changed;
+}
+
 bool TestModel::isRunning()
 {
     return _running;
@@ -166,6 +177,7 @@ TestItemRoot * TestModel::rootItem()
 void TestModel::save(FileFormatBase *to)
 {
     _rootItem->save(to);
+    change(false);
 }
 
 void TestModel::read(FileFormatBase *from)
@@ -174,6 +186,7 @@ void TestModel::read(FileFormatBase *from)
     _rootItem->deleteChildren();
     _rootItem->read(from);
     endResetModel();
+    change(false);
 }
 
 void TestModel::execute()
@@ -299,7 +312,11 @@ void TestModel::clear()
 {
     beginResetModel();
     _rootItem->deleteChildren();
+    _rootItem->setShuffle(true);
     endResetModel();
+
+    _clean = true;
+    _changed = false;
 }
 
 bool TestModel::getShuffle()
@@ -310,6 +327,7 @@ bool TestModel::getShuffle()
 void TestModel::setShuffle(bool shuffle)
 {
     _rootItem->setShuffle(shuffle);
+    change();
 }
 
 void TestModel::selectAll()
@@ -391,6 +409,13 @@ void TestModel::executeNextJob()
     }
 }
 
+void TestModel::change(bool c)
+{
+    _clean = false;
+    _changed = c;
+    emit changed();
+}
+
 void TestModel::queueJob(ExecutableBase *job)
 {
     connect(job, SIGNAL(started()), this, SLOT(jobExecuted()));
@@ -442,16 +467,11 @@ void TestModel::updateChildren(const QModelIndex &index, QVector<int> roles)
     }
 }
 
-void TestModel::updateProgress(int percent)
-{
-    emit progressUpdated(percent);
-}
-
 void TestModel::updateRunningTest(const QString &test)
 {
     if (_runningTestCount > 0) {
-        _completedTestCount++;
         emit progressUpdated(static_cast<int>(double(_completedTestCount) / _runningTestCount * 100 + 0.5));
+        _completedTestCount++;
     }
 
     emit testStarted(test);

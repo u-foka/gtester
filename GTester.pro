@@ -24,7 +24,9 @@ SOURCES += \
     src/executabletestrunner.cpp \
     src/fileformatbase.cpp \
     src/fileformatv10.cpp \
-    src/utils.cpp
+    src/utils.cpp \
+    src/application.cpp \
+    src/defaultmenu.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -39,9 +41,15 @@ HEADERS += \
     src/executabletestrunner.h \
     src/fileformatbase.h \
     src/fileformatv10.h \
-    src/utils.h
+    src/utils.h \
+    src/application.h \
+    src/defaultmenu.h
 
 FORMS += \
     ui/mainwindow.ui
 
 RESOURCES += resources/icons.qrc
+
+mac {
+    LIBS += -framework cocoa
+}

@@ -19,6 +19,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
 
+    void Clean();
+    void OpenFile(const QString &fileName);
+
+    bool isClean();
+    bool isChanged();
+
+signals:
+    void Closed(MainWindow *window);
+
 private slots:
     void on_actionOpen_triggered();
     void on_actionSave_triggered();
@@ -40,8 +49,9 @@ private slots:
     void on_actionNew_triggered();
 
     void on_actionAbout_Qt_triggered();
-
     void on_actionAbout_GTester_triggered();
+
+    void updateTitle();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -52,7 +62,6 @@ private:
     TestModel _model;
 
     QString _actualFile;
-    void updateTitle();
 
 };
 
