@@ -26,8 +26,10 @@ DefaultMenu::DefaultMenu(QWidget *parent) :
     QMenu *dockMenu = new QMenu(this);
     dockMenu->addAction(tr("New File"), AppInstance, SLOT(openNewWindow()));
 
+#ifdef Q_OS_MAC
     extern void qt_mac_set_dock_menu(QMenu *);
     qt_mac_set_dock_menu(dockMenu);
+#endif
 }
 
 void DefaultMenu::ShowAboutQtBox()
