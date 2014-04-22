@@ -29,7 +29,8 @@ bool dockClickHandler(id self,SEL _cmd,...)
 const QString InstanceSocketName = "hu.iwstudio.gtester.instance.socket";
 
 Application::Application(int &argc, char **argv) :
-    QApplication(argc, argv), _windows(), _defaultMenu(new DefaultMenu()), _instanceSocket()
+    QApplication(argc, argv), _windows(), _lastActiveWindow(0), _defaultMenu(new DefaultMenu()),
+    _instanceSocket()
 {
     setApplicationName("gtester");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -50,13 +51,12 @@ Application::Application(int &argc, char **argv) :
     {
         objc_object* delegate = objc_msgSend(appInst, sel_registerName("delegate"));
         objc_object* delClass = objc_msgSend(delegate, sel_registerName("class"));
-        const char* tst = class_getName(delClass->isa);
-        bool test = class_addMethod((objc_class*)delClass,
+        bool res = class_addMethod(reinterpret_cast<Class>(delClass),
             sel_registerName("applicationShouldHandleReopen:hasVisibleWindows:"), (IMP)dockClickHandler, "B@:");
 
-        if (!test)
+        if (!res)
         {
-            // failed to register handler...
+            qDebug() << "failed to register dockClickHandler...";
         }
     }
 
@@ -114,6 +114,8 @@ void Application::OpenNewWindow(const QString &fileName)
     _windows.push_back(w);
 
     connect(w, SIGNAL(Closed(MainWindow*)), this, SLOT(WindowClosed(MainWindow*)));
+    connect(w, SIGNAL(Focused(MainWindow*)), this, SLOT(WindowFocused(MainWindow*)));
+
     if (useWindowPos) {
         w->setGeometry(windowPos.x() + 20, windowPos.y() + 20, w->width(), w->height());
     }
@@ -143,7 +145,15 @@ void Application::SelectOpenFile()
 void Application::WindowClosed(MainWindow *window)
 {
     _windows.removeAt(_windows.indexOf(window));
+    if (_lastActiveWindow == window) {
+        _lastActiveWindow = 0;
+    }
     delete window;
+}
+
+void Application::WindowFocused(MainWindow *window)
+{
+    _lastActiveWindow = window;
 }
 
 void Application::ShowAboutBox()
@@ -185,11 +195,10 @@ void Application::InstanceSocketConnection()
     QPointer<QLocalSocket> socket(_instanceSocket.nextPendingConnection());
 
     qDebug() << "activeWindow() " << activeWindow();
-    if (activeWindow() != 0) {
-        SetFocus::To(activeWindow());
+    if (_lastActiveWindow != 0) {
+        SetFocus::To(_lastActiveWindow);
     } else if (_windows.count() > 0) {
-        // Workaround for qt bug on Mac OS
-        SetFocus::To(_windows.at(0));
+        SetFocus::To(_windows.last());
     } else {
         OpenNewWindow();
     }

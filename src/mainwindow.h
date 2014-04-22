@@ -27,6 +27,7 @@ public:
 
 signals:
     void Closed(MainWindow *window);
+    void Focused(MainWindow *window);
 
 private slots:
     void on_actionOpen_triggered();
@@ -55,6 +56,7 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void changeEvent(QEvent *event);
 
 private:
     Ui::MainWindow *_ui;

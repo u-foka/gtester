@@ -29,6 +29,7 @@ public slots:
     void OpenNewWindow(const QString &fileName = QString());
     void SelectOpenFile();
     void WindowClosed(MainWindow *window);
+    void WindowFocused(MainWindow *window);
     void ShowAboutBox();
 
     void CloseAndQuit();
@@ -39,6 +40,7 @@ public slots:
 
 private:
     QVector<MainWindow*> _windows;
+    MainWindow *_lastActiveWindow;
     DefaultMenu *_defaultMenu;
 
     QLocalServer _instanceSocket;

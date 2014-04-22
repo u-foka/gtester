@@ -201,6 +201,17 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
     // Notify application
     emit Closed(this);
+
+    QMainWindow::closeEvent(event);
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::ActivationChange && isActiveWindow()) {
+        emit Focused(this);
+    }
+
+    QMainWindow::changeEvent(event);
 }
 
 void MainWindow::on_actionRun_selected_triggered()
