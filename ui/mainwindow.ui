@@ -237,7 +237,10 @@
      <normaloff>:/icons/process-run.png</normaloff>:/icons/process-run.png</iconset>
    </property>
    <property name="text">
-    <string>R&amp;un selected</string>
+    <string>R&amp;un</string>
+   </property>
+   <property name="toolTip">
+    <string>Run selected tests</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -252,7 +255,7 @@
      <normaloff>:/icons/view-refresh.png</normaloff>:/icons/view-refresh.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Refresh tests</string>
+    <string>&amp;Refresh</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -276,7 +279,10 @@
      <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
-    <string>Add &amp;test executable</string>
+    <string>Ad&amp;d</string>
+   </property>
+   <property name="toolTip">
+    <string>Add test executable</string>
    </property>
   </action>
   <action name="actionRemove_test_executable">
@@ -288,7 +294,10 @@
      <normaloff>:/icons/list-remove.png</normaloff>:/icons/list-remove.png</iconset>
    </property>
    <property name="text">
-    <string>R&amp;emove test executable</string>
+    <string>R&amp;emove</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove test executable</string>
    </property>
   </action>
   <action name="actionAbout_GTester">

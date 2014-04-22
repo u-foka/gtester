@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->setupUi(this);
 
 #ifdef Q_OS_MAC
+    _ui->mainToolBar->setMovable(false);
+    _ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     _ui->statusBar->setSizeGripEnabled(false);
 #endif
 
