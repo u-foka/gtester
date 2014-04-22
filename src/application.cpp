@@ -10,6 +10,7 @@
 #include "mainwindow.h"
 #include "defaultmenu.h"
 #include "setfocus.h"
+#include "ipcmessage.h"
 
 #ifdef Q_OS_MAC
 
@@ -27,6 +28,7 @@ bool dockClickHandler(id self,SEL _cmd,...)
 #endif
 
 const QString InstanceSocketName = "hu.iwstudio.gtester.instance.socket";
+const QString IpcFileNameToken = "FileName";
 
 Application::Application(int &argc, char **argv) :
     QApplication(argc, argv), _windows(), _lastActiveWindow(0), _defaultMenu(new DefaultMenu()),
@@ -74,7 +76,21 @@ int Application::exec()
     QLocalSocket instanceClient;
     instanceClient.connectToServer(InstanceSocketName);
     if (instanceClient.waitForConnected(500)) {
-        // Notify the existing instance
+        IpcMessage msg;
+        if (arguments().count() <= 1) {
+            msg.Type(IpcMessage::Activate);
+        } else {
+            msg.Type(IpcMessage::OpenDocument);
+            msg.Values().insert(IpcFileNameToken, arguments().at(1));
+        }
+
+        QByteArray data;
+        msg.Serialize(data);
+        instanceClient.write(data);
+        if (! instanceClient.waitForBytesWritten()) {
+            qDebug() << "Failed to write message to the other instance...";
+        }
+        instanceClient.disconnectFromServer();
 
         return 0;
     }
@@ -86,7 +102,11 @@ int Application::exec()
     setWindowIcon(QIcon(":/icons/gtester128.png"));
 #endif
 
-    AppInstance->OpenNewWindow();
+    if (arguments().count() <= 1) {
+        AppInstance->OpenNewWindow();
+    } else {
+        AppInstance->OpenNewWindow(arguments().at(1));
+    }
 
     return QApplication::exec();
 }
@@ -190,16 +210,31 @@ void Application::ReportABug()
 
 void Application::InstanceSocketConnection()
 {
-    qDebug() << "InstanceSocketConnection";
-
     QPointer<QLocalSocket> socket(_instanceSocket.nextPendingConnection());
+    socket->waitForReadyRead();
 
-    qDebug() << "activeWindow() " << activeWindow();
-    if (_lastActiveWindow != 0) {
-        SetFocus::To(_lastActiveWindow);
-    } else if (_windows.count() > 0) {
-        SetFocus::To(_windows.last());
-    } else {
-        OpenNewWindow();
+    QByteArray data = socket->readAll();
+    IpcMessage msg;
+    msg.Parse(data);
+
+    switch (msg.Type()) {
+    case IpcMessage::OpenDocument: {
+        IpcMessage::ValueList::Iterator i = msg.Values().find(IpcFileNameToken);
+        if (i != msg.Values().end()) {
+            OpenNewWindow(i.value());
+        }
+        break;
     }
+    case IpcMessage::Activate:
+        if (_lastActiveWindow != 0) {
+            SetFocus::To(_lastActiveWindow);
+        } else if (_windows.count() > 0) {
+            SetFocus::To(_windows.last());
+        } else {
+            OpenNewWindow();
+        }
+        break;
+
+    }
+
 }

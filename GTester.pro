@@ -26,7 +26,8 @@ SOURCES += \
     src/fileformatv10.cpp \
     src/utils.cpp \
     src/application.cpp \
-    src/defaultmenu.cpp
+    src/defaultmenu.cpp \
+    src/ipcmessage.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -44,7 +45,8 @@ HEADERS += \
     src/utils.h \
     src/application.h \
     src/defaultmenu.h \
-    src/setfocus.h
+    src/setfocus.h \
+    src/ipcmessage.h
 
 FORMS += \
     ui/mainwindow.ui
