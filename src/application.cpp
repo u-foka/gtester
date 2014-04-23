@@ -69,6 +69,7 @@ Application::Application(int &argc, char **argv) :
 
 Application::~Application()
 {
+    delete _defaultMenu;
 }
 
 int Application::exec()
@@ -154,9 +155,9 @@ void Application::SelectOpenFile()
     if (newFile.isEmpty())
         return;
 
-    MainWindow *window = dynamic_cast<MainWindow*>(activeWindow());
-    if (window != 0 && window->isClean()) {
-        window->OpenFile(newFile);
+    if (_lastActiveWindow != 0 && _lastActiveWindow->isClean()) {
+        _lastActiveWindow->OpenFile(newFile);
+        SetFocus::To(_lastActiveWindow);
     } else {
         OpenNewWindow(newFile);
     }
