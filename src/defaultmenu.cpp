@@ -12,10 +12,10 @@ DefaultMenu::DefaultMenu(QWidget *parent) :
     fileMenu->addAction(tr("About GTester"), AppInstance, SLOT(ShowAboutBox()));
     fileMenu->addAction(tr("About Qt"), this, SLOT(ShowAboutQtBox()));
     fileMenu->addAction(tr("&Quit GTester"), AppInstance, SLOT(CloseAndQuit()));
-    QAction *fileNew = fileMenu->addAction(tr("&New"), AppInstance, SLOT(openNewWindow()));
+    QAction *fileNew = fileMenu->addAction(tr("&New"), AppInstance, SLOT(OpenNewWindow()));
     fileNew->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
     fileNew->setIcon(QIcon(":/icons/document-new.png"));
-    QAction *fileOpen = fileMenu->addAction(tr("&Open"), AppInstance, SLOT(selectOpenFile()));
+    QAction *fileOpen = fileMenu->addAction(tr("&Open"), AppInstance, SLOT(SelectOpenFile()));
     fileOpen->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     fileOpen->setIcon(QIcon(":/icons/document-open.png"));
 
@@ -24,7 +24,7 @@ DefaultMenu::DefaultMenu(QWidget *parent) :
 
     // Dock icon menu
     QMenu *dockMenu = new QMenu(this);
-    dockMenu->addAction(tr("New File"), AppInstance, SLOT(openNewWindow()));
+    dockMenu->addAction(tr("New File"), AppInstance, SLOT(OpenNewWindow()));
 
 #ifdef Q_OS_MAC
     extern void qt_mac_set_dock_menu(QMenu *);
