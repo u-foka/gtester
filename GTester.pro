@@ -56,8 +56,12 @@ RESOURCES += resources/icons.qrc
 mac {
     LIBS += -framework cocoa
 
+    HEADERS += \
+        src/cocoainitializer.h
+
     OBJECTIVE_SOURCES += \
-        src/setfocus.mm
+        src/setfocus.mm \
+        src/cocoainitializer.mm
 }
 
 linux|win32 {

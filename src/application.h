@@ -4,12 +4,17 @@
 #include <QApplication>
 #include <QVector>
 #include <QLocalServer>
+#include <QPointer>
+
+#ifdef Q_OS_MAC
+#include "cocoainitializer.h"
+#endif
 
 #define AppInstance (static_cast< ::Application *>(::QCoreApplication::instance()))
 
-
 class MainWindow;
 class DefaultMenu;
+class CocoaInitializer;
 
 class Application : public QApplication
 {
@@ -41,9 +46,13 @@ public slots:
 private:
     QVector<MainWindow*> _windows;
     MainWindow *_lastActiveWindow;
-    DefaultMenu *_defaultMenu;
+    QPointer<DefaultMenu> _defaultMenu;
 
     QLocalServer _instanceSocket;
+
+#ifdef Q_OS_MAC
+    CocoaInitializer _cocoaInitializer;
+#endif
 
 };
 

@@ -7,16 +7,20 @@
 #include <QDesktopServices>
 #include <QLocalSocket>
 
+#ifdef Q_OS_MAC
+#include <objc/objc.h>
+#include <objc/message.h>
+#endif
+
 #include "mainwindow.h"
 #include "defaultmenu.h"
 #include "setfocus.h"
 #include "ipcmessage.h"
 
+const QString InstanceSocketName = "hu.iwstudio.gtester.instance.socket";
+const QString IpcFileNameToken = "FileName";
+
 #ifdef Q_OS_MAC
-
-#include <objc/objc.h>
-#include <objc/message.h>
-
 bool dockClickHandler(id self,SEL _cmd,...)
 {
     Q_UNUSED(self)
@@ -24,11 +28,7 @@ bool dockClickHandler(id self,SEL _cmd,...)
     AppInstance->DockClick();
     return true;
 }
-
 #endif
-
-const QString InstanceSocketName = "hu.iwstudio.gtester.instance.socket";
-const QString IpcFileNameToken = "FileName";
 
 Application::Application(int &argc, char **argv) :
     QApplication(argc, argv), _windows(), _lastActiveWindow(0), _defaultMenu(new DefaultMenu()),
@@ -126,8 +126,8 @@ void Application::OpenNewWindow(const QString &fileName)
     QPoint windowPos;
     bool useWindowPos = false;
 
-    if (activeWindow()) {
-        windowPos = activeWindow()->pos();
+    if (_lastActiveWindow) {
+        windowPos = _lastActiveWindow->pos();
         useWindowPos = true;
     }
 
@@ -138,7 +138,7 @@ void Application::OpenNewWindow(const QString &fileName)
     connect(w, SIGNAL(Focused(MainWindow*)), this, SLOT(WindowFocused(MainWindow*)));
 
     if (useWindowPos) {
-        w->setGeometry(windowPos.x() + 20, windowPos.y() + 20, w->width(), w->height());
+        w->setGeometry(windowPos.x() + 20, windowPos.y() + 40, w->width(), w->height());
     }
 
     w->show();
@@ -169,7 +169,7 @@ void Application::WindowClosed(MainWindow *window)
     if (_lastActiveWindow == window) {
         _lastActiveWindow = 0;
     }
-    delete window;
+    window->deleteLater();
 }
 
 void Application::WindowFocused(MainWindow *window)
