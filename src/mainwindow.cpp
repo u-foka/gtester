@@ -331,8 +331,8 @@ void MainWindow::on_actionSave_As_triggered()
         }
 
         _actualFile = newFile;
-        updateTitle();
         on_actionSave_triggered();
+        updateTitle();
     }
 }
 
