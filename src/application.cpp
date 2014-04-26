@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QLocalSocket>
+#include <QFileOpenEvent>
 
 #ifdef Q_OS_MAC
 #include <objc/objc.h>
@@ -155,11 +156,16 @@ void Application::SelectOpenFile()
     if (newFile.isEmpty())
         return;
 
+    OpenFile(newFile);
+}
+
+void Application::OpenFile(const QString &file)
+{
     if (_lastActiveWindow != 0 && _lastActiveWindow->isClean()) {
-        _lastActiveWindow->OpenFile(newFile);
+        _lastActiveWindow->OpenFile(file);
         SetFocus::To(_lastActiveWindow);
     } else {
-        OpenNewWindow(newFile);
+        OpenNewWindow(file);
     }
 }
 
@@ -238,4 +244,17 @@ void Application::InstanceSocketConnection()
 
     }
 
+}
+
+bool Application::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::FileOpen:
+        OpenFile(static_cast<QFileOpenEvent*>(event)->file());
+        return true;
+
+    default:
+        return QApplication::event(event);
+
+    }
 }

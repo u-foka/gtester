@@ -7,9 +7,6 @@ TEMPLATE = app
 
 DEFINES += "GTESTER_VERSION=\"\\\"$$system(git describe)\\\"\""
 
-ICON = resources/gtester.icns
-RC_FILE = resources/gtester.rc
-
 SOURCES += \
     src/main.cpp\
     src/mainwindow.cpp \
@@ -62,9 +59,24 @@ mac {
     OBJECTIVE_SOURCES += \
         src/setfocus.mm \
         src/cocoainitializer.mm
+
+    ICON = resources/gtester.icns
+
+    RESFILES.files = resources/gtester-file.icns
+    RESFILES.path = Contents/Resources
+    QMAKE_BUNDLE_DATA += RESFILES
+
+    QMAKE_INFO_PLIST = resources/Info.plist
 }
 
-linux|win32 {
+linux {
     SOURCES += \
         src/setfocus.cpp
+}
+
+win32 {
+    SOURCES += \
+        src/setfocus.cpp
+
+    RC_FILE = resources/gtester.rc
 }

@@ -33,6 +33,7 @@ public slots:
 #endif
     void OpenNewWindow(const QString &fileName = QString());
     void SelectOpenFile();
+    void OpenFile(const QString &file);
     void WindowClosed(MainWindow *window);
     void WindowFocused(MainWindow *window);
     void ShowAboutBox();
@@ -42,6 +43,9 @@ public slots:
     void ReportABug();
 
     void InstanceSocketConnection();
+
+protected:
+    bool event(QEvent *event);
 
 private:
     QVector<MainWindow*> _windows;
