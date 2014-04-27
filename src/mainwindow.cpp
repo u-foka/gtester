@@ -10,9 +10,11 @@
 #include <QPointer>
 
 #include "application.h"
+#include "testitemroot.h"
 #include "testitemexecutable.h"
 #include "testitem.h"
 #include "fileformatv10.h"
+#include "iconerrorcount.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -147,10 +149,18 @@ void MainWindow::model_executionStateChanged(bool running)
     if (!running) {
         _ui->progressBar->setValue(0);
         _ui->statusBar->clearMessage();
-        if (hasSelection)
+        if (hasSelection) {
             updateOutput(static_cast<TestItemBase*>(
                              _ui->testsTree->selectionModel()->selectedIndexes().first().internalPointer()
                          ));
+        }
+
+        size_t errors = _model.rootItem()->getErrorCount();
+        QString errorLabel;
+        if (errors > 0) {
+            errorLabel = QString::number(errors);
+        }
+        IconErrorCount::SetErrorlabel(errorLabel);
     } else {
         _ui->outputEdit->setText(QString());
     }

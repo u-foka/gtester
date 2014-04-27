@@ -40,6 +40,7 @@ public:
     TestModel *getModel() const;
 
     virtual TestStates getTestState() const;
+    virtual size_t getErrorCount() const;
 
     virtual void selectAll();
     virtual void deselectAll();

@@ -20,6 +20,8 @@ public:
     virtual TestStates getTestState() const;
     void setTestState(TestStates state);
 
+    virtual size_t getErrorCount() const;
+
     virtual void selectAll();
     virtual void deselectAll();
     virtual void invertSelection();

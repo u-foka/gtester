@@ -43,7 +43,8 @@ HEADERS += \
     src/application.h \
     src/defaultmenu.h \
     src/setfocus.h \
-    src/ipcmessage.h
+    src/ipcmessage.h \
+    src/iconerrorcount.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -58,7 +59,8 @@ mac {
 
     OBJECTIVE_SOURCES += \
         src/setfocus.mm \
-        src/cocoainitializer.mm
+        src/cocoainitializer.mm \
+        src/iconerrorcount.mm
 
     ICON = resources/gtester.icns
 
@@ -71,12 +73,14 @@ mac {
 
 linux {
     SOURCES += \
-        src/setfocus.cpp
+        src/setfocus.cpp \
+        src/iconerrorcount.cpp
 }
 
 win32 {
     SOURCES += \
-        src/setfocus.cpp
+        src/setfocus.cpp \
+        src/iconerrorcount.cpp
 
     RC_FILE = resources/gtester.rc
 }

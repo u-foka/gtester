@@ -74,6 +74,15 @@ void TestItem::setTestState(TestStates state)
     getModel()->updateParents(index, roles, ColumnState);
 }
 
+size_t TestItem::getErrorCount() const
+{
+    if (_state == StateFail || _state == StateTerminated) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 void TestItem::selectAll()
 {
     _enabled = true;

@@ -145,6 +145,16 @@ TestItemBase::TestStates TestItemBase::getTestState() const
     return state;
 }
 
+size_t TestItemBase::getErrorCount() const
+{
+    size_t count = 0;
+    for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
+        count += (*it)->getErrorCount();
+    }
+
+    return count;
+}
+
 void TestItemBase::selectAll()
 {
     for (QList<TestItemBase*>::ConstIterator it = _childItems.begin(); it != _childItems.end(); it++) {
