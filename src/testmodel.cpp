@@ -231,6 +231,8 @@ void TestModel::removeExecutable(const QModelIndex index)
 
 void TestModel::removeExecutable(TestItemBase *item)
 {
+    change();
+
     // Check if the given item is the root item
     TestItemRoot *root = dynamic_cast<TestItemRoot*>(item);
     if (root != 0) {
@@ -272,6 +274,8 @@ void TestModel::refresh(const QModelIndex &index)
 
 void TestModel::refresh(TestItemBase *item)
 {
+    change();
+
     // Check if the given item is the root item
     TestItemRoot *root = dynamic_cast<TestItemRoot*>(item);
     if (root != 0) {
