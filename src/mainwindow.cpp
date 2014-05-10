@@ -14,7 +14,6 @@
 #include "testitemexecutable.h"
 #include "testitem.h"
 #include "fileformatv10.h"
-#include "iconerrorcount.h"
 
 #define SETTINGS_VERSION "Version"
 #define SETTINGS_WINDOW_GEOMETRY "MainWindow/Geometry"
@@ -96,6 +95,9 @@ void MainWindow::Clean()
     _actualFile.clear();
     _model.clear();
     updateTitle();
+
+    emit SetErrorCount(this, 0);
+    emit ClearProgress(this);
 }
 
 void MainWindow::OpenFile(const QString &fileName)
@@ -155,12 +157,8 @@ void MainWindow::model_executionStateChanged(bool running)
                          ));
         }
 
-        size_t errors = _model.rootItem()->getErrorCount();
-        QString errorLabel;
-        if (errors > 0) {
-            errorLabel = QString::number(errors);
-        }
-        IconErrorCount::SetErrorlabel(errorLabel);
+        emit SetErrorCount(this, _model.rootItem()->getErrorCount());
+        emit ClearProgress(this);
     } else {
         _ui->outputEdit->setText(QString());
     }
@@ -285,6 +283,7 @@ void MainWindow::testsTree_selectionChanged(QItemSelection newSel, QItemSelectio
 void MainWindow::model_progressUpdated(int percent)
 {
     _ui->progressBar->setValue(percent);
+    emit SetProgress(this, percent);
 }
 
 void MainWindow::model_testStarted(const QString &status)

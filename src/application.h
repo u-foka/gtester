@@ -6,6 +6,8 @@
 #include <QLocalServer>
 #include <QPointer>
 
+#include "globalprogress.h"
+
 #ifdef Q_OS_MAC
 #include "cocoainitializer.h"
 #endif
@@ -53,6 +55,8 @@ private:
     QPointer<DefaultMenu> _defaultMenu;
 
     QLocalServer _instanceSocket;
+
+    GlobalProgress _globalProgress;
 
 #ifdef Q_OS_MAC
     CocoaInitializer _cocoaInitializer;

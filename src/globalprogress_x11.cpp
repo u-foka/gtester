@@ -1,10 +1,17 @@
-#include "iconerrorcount.h"
+#include "globalprogress.h"
 
-IconErrorCount::IconErrorCount()
+void GlobalProgress::ErrorLabel(const QString &errors)
 {
+    Q_UNUSED(errors);
 }
 
-void IconErrorCount::SetErrorlabel(const QString &text)
+void GlobalProgress::Progress(int progress, int max)
 {
-    Q_UNUSED(text);
+    Q_UNUSED(progress);
+    Q_UNUSED(max);
+}
+
+void GlobalProgress::ShowProgress(bool show)
+{
+    Q_UNUSED(show);
 }

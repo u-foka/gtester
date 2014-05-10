@@ -28,6 +28,9 @@ public:
 signals:
     void Closed(MainWindow *window);
     void Focused(MainWindow *window);
+    void SetErrorCount(MainWindow *window, size_t errors);
+    void SetProgress(MainWindow *window, int percent);
+    void ClearProgress(MainWindow *window);
 
 private slots:
     void on_actionOpen_triggered();

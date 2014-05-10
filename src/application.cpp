@@ -137,6 +137,10 @@ void Application::OpenNewWindow(const QString &fileName)
 
     connect(w, SIGNAL(Closed(MainWindow*)), this, SLOT(WindowClosed(MainWindow*)));
     connect(w, SIGNAL(Focused(MainWindow*)), this, SLOT(WindowFocused(MainWindow*)));
+    connect(w, SIGNAL(SetErrorCount(MainWindow*,size_t)), &_globalProgress, SLOT(SetErrorCount(MainWindow*,size_t)));
+    connect(w, SIGNAL(SetProgress(MainWindow*,int)), &_globalProgress, SLOT(SetProgress(MainWindow*,int)));
+    connect(w, SIGNAL(ClearProgress(MainWindow*)), &_globalProgress, SLOT(ClearProgress(MainWindow*)));
+    connect(w, SIGNAL(Closed(MainWindow*)), &_globalProgress, SLOT(RemoveWindow(MainWindow*)));
 
     if (useWindowPos) {
         w->setGeometry(windowPos.x() + 20, windowPos.y() + 40, w->width(), w->height());

@@ -7,6 +7,11 @@
 DefaultMenu::DefaultMenu(QWidget *parent) :
     QMenuBar(parent)
 {
+#ifdef Q_OS_MAC
+    // Disable menu icons on mac
+    AppInstance->setAttribute(Qt::AA_DontShowIconsInMenus);
+#endif
+
     // Default main menu
     QMenu *fileMenu = addMenu(tr("&File"));
     fileMenu->addAction(tr("About GTester"), AppInstance, SLOT(ShowAboutBox()));

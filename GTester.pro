@@ -24,7 +24,8 @@ SOURCES += \
     src/utils.cpp \
     src/application.cpp \
     src/defaultmenu.cpp \
-    src/ipcmessage.cpp
+    src/ipcmessage.cpp \
+    src/globalprogress.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -44,7 +45,7 @@ HEADERS += \
     src/defaultmenu.h \
     src/setfocus.h \
     src/ipcmessage.h \
-    src/iconerrorcount.h
+    src/globalprogress.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -60,7 +61,7 @@ mac {
     OBJECTIVE_SOURCES += \
         src/setfocus.mm \
         src/cocoainitializer.mm \
-        src/iconerrorcount.mm
+        src/globalprogress_mac.mm
 
     ICON = resources/gtester.icns
 
@@ -74,13 +75,13 @@ mac {
 linux {
     SOURCES += \
         src/setfocus.cpp \
-        src/iconerrorcount.cpp
+        src/globalprogress_x11.cpp
 }
 
 win32 {
     SOURCES += \
         src/setfocus.cpp \
-        src/iconerrorcount.cpp
+        src/globalprogress_win.cpp
 
     RC_FILE = resources/gtester.rc
 }
