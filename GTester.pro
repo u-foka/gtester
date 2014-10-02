@@ -70,6 +70,7 @@ mac {
     QMAKE_BUNDLE_DATA += RESFILES
 
     QMAKE_INFO_PLIST = resources/Info.plist
+    OTHER_FILES += resources/Info.plist
 }
 
 linux {

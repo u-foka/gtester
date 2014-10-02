@@ -23,6 +23,8 @@
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>GTester test list</string>
+                        <key>CFBundleTypeRole</key>
+                        <string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 		</dict>
