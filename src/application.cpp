@@ -46,7 +46,7 @@ Application::Application(int &argc, char **argv) :
 #ifdef Q_OS_MAC
     setQuitOnLastWindowClosed(false);
 
-    objc_object* cls = objc_getClass("NSApplication");
+    objc_object* cls = (objc_object*) objc_getClass("NSApplication");
     SEL sharedApplication = sel_registerName("sharedApplication");
     objc_object* appInst = objc_msgSend(cls, sharedApplication);
 
