@@ -73,17 +73,17 @@ Application::~Application()
     delete _defaultMenu;
 }
 
-int Application::exec()
+bool Application::checkInstance(int argc, char *argv[])
 {
     QLocalSocket instanceClient;
     instanceClient.connectToServer(InstanceSocketName);
     if (instanceClient.waitForConnected(500)) {
         IpcMessage msg;
-        if (arguments().count() <= 1) {
+        if (argc <= 1) {
             msg.Type(IpcMessage::Activate);
         } else {
             msg.Type(IpcMessage::OpenDocument);
-            msg.Values().insert(IpcFileNameToken, arguments().at(1));
+            msg.Values().insert(IpcFileNameToken, argv[1]);
         }
 
         QByteArray data;
@@ -94,9 +94,14 @@ int Application::exec()
         }
         instanceClient.disconnectFromServer();
 
-        return 0;
+        return true;
     }
 
+    return false;
+}
+
+int Application::exec()
+{
     QLocalServer::removeServer(InstanceSocketName);
     AppInstance->_instanceSocket.listen(InstanceSocketName);
 

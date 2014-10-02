@@ -25,6 +25,7 @@ public:
     explicit Application(int &argc, char **argv);
     ~Application();
 
+    static bool checkInstance(int argc, char *argv[]);
     static int exec();
 
 signals:
@@ -62,6 +63,7 @@ private:
     CocoaInitializer _cocoaInitializer;
 #endif
 
+    bool checkInstance();
 };
 
 #endif // APPLICATION_H
