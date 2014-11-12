@@ -71,6 +71,12 @@ mac {
 
     QMAKE_INFO_PLIST = resources/Info.plist
     OTHER_FILES += resources/Info.plist
+
+    dmg.target = GTester.dmg
+    dmg.depends = all
+    dmg.commands = \"$$PWD/setup/dmg.sh\"
+
+    QMAKE_EXTRA_TARGETS += dmg
 }
 
 linux {
