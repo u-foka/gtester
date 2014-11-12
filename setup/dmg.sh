@@ -12,6 +12,7 @@ test -d "${BUILD_DIR}/dmg-temp" && rm -rf "${BUILD_DIR}/dmg-temp"
 mkdir "${BUILD_DIR}/dmg-temp"
 
 cp -a "${BUILD_DIR}/GTester.app" "${BUILD_DIR}/dmg-temp/"
+macdeployqt "$BUILD_DIR/dmg-temp/GTester.app"
 
 create-dmg \
 	--volname GTester \
