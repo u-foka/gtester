@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "GTester"
-#define MyAppVersion "1.0 beta1"
+#define MyAppVersion "1.0"
 #define MyAppExeName "GTester.exe"
 
 [Setup]
@@ -29,17 +29,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\..\build-GTester-Desktop_Qt_5_2_0_MSVC2012_OpenGL_64bit-Release\release\GTester.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build-GTester-Desktop_Qt_5_6_0_MSVC2015_64bit-Release\release\GTester.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: "C:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\bin\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\bin\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\bin\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "c:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
-Source: "C:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\bin\icuin51.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\bin\icuuc51.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\Qt5.2.0\5.2.0\msvc2012_64_opengl\bin\icudt51.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Windows\sysnative\msvcp110.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Windows\sysnative\msvcr110.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\Qt5Network.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\icuin54.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\icuuc54.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Qt\5.6\msvc2015_64\bin\icudt54.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Windows\system32\msvcp140.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "C:\Windows\system32\msvcr140.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
